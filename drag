@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>拖拽,碰撞,交换</title>
+<style>
+body,ul{margin:0;padding:0;}
+ul{width:640px;margin:20px auto 0;position:relative;}
+li{width:200px;list-style:none;float:left; margin:10px;}
+li img{width:200px;height:150px;vertical-align:middle;border:0;}
+li span{font-size:26px;color:#fff; font-weight:bold;position:absolute;right:0;bottom:0;z-index:9999;}
+.collision{border: 3px dashed red;}
+</style>
+<script>
+window.onload = function(){
+	var aLi = document.getElementsByTagName('li');
+	var pos = [];
+	var iZindex = 1,tag = null;
+	
+	
+	for(var i=0;i<aLi.length;i++){
+		pos[i] = {top:aLi[i].offsetTop,left:aLi[i].offsetLeft};
+		aLi[i].style.top = pos[i].top + 'px';
+		aLi[i].style.left = pos[i].left + 'px';
+		aLi[i].index = i;
+		aLi[i].onmousedown = drag;
+	}	
+	
+	for(var i=0;i<aLi.length;i++){
+		aLi[i].style.margin = '0';
+		aLi[i].style.position='absolute';
+	}
+	
+	//拖拽
+	function drag(ev){
+		clearInterval(this.bTimer);
+		var ev = ev || event;
+		var _this = this, obj  = null;
+		var eX = ev.clientX - this.offsetLeft;
+		var eY = ev.clientY - this.offsetTop;
+		this.style.zIndex = iZindex++;
+		
+		document.onmousemove = function(ev){
+			var l = ev.clientX - eX;
+			var t = ev.clientY - eY;
+			_this.style.top = t + 'px';
+			_this.style.left = l + 'px';
+			
+			for(var i=0;i<aLi.length;i++){
+				aLi[i].className = '';
+				tag = null;
+			}
+			
+			var iMinDis = 99999,index = -1;
+			for(var i=0;i<aLi.length;i++){
+				if(_this == aLi[i]) continue;
+				
+				if(collision(_this,aLi[i])){
+					var a = aLi[i].offsetTop - _this.offsetTop;
+					var b = aLi[i].offsetLeft - _this.offsetLeft;
+					var dis = Math.sqrt(a*a+b*b);
+					
+					if(iMinDis > dis){
+						iMinDis = dis;
+						index = i;
+					}
+				}
+			}	
+			
+			if(index!=-1){
+				aLi[index].className = 'collision';
+				tag = index;
+			}
+		}		
+		
+		document.onmouseup = function(){
+			document.onmousemove = document.onmouseup = null;		
+			if(tag!=null){
+				aLi[tag].style.zIndex = iZindex++;
+				aLi[tag].className = '';
+				var i = _this.index;
+				buffer(_this, pos[tag]);
+				buffer(aLi[tag], pos[i]);
+				
+				var mid = pos[tag]
+				pos[tag] = pos[i];
+				pos[i] = mid;
+			}else{
+				buffer(_this, pos[_this.index]);
+			}
+		}
+		
+		return false;	
+	}
+	
+	
+	//缓冲运动
+	function buffer(obj, json, fn){
+		clearInterval(obj.bTimer);
+		obj.bTimer = setInterval(function(){
+			var onOff = true;
+			for(var i in json){
+		        var attr = 0;
+				if(i != 'opacity'){
+					attr = parseInt(getStyle(obj, i));
+				}else{
+					attr = parseInt(parseFloat(getStyle(obj, i)) * 100);	
+				}	
+				
+				var dis = (json[i] - attr) / 2;
+				dis = dis > 0 ? Math.ceil(dis) : Math.floor(dis);
+				dis += attr;
+				
+				if(dis != json[i]){
+					onOff = false;	
+				}
+				
+				if(i != 'opacity'){
+					obj.style[i] = dis + 'px';
+				}else{
+					obj.style.opacity = dis / 100;
+				    obj.style.filter = 'alpha(opacity:'+dis+')';
+				}
+			}
+			
+			if(onOff){
+				clearInterval(obj.bTimer);
+				fn && fn(obj);	
+			}
+		},100);
+	}
+	
+	//碰撞检测
+	function collision(obj, obj2){
+		var l 	= obj.offsetLeft;
+		var r 	= obj.offsetLeft + obj.offsetWidth;
+		var t 	= obj.offsetTop;
+		var b 	= obj.offsetTop + obj.offsetHeight;
+		
+		var l2	= obj2.offsetLeft;
+		var r2	= obj2.offsetLeft + obj2.offsetWidth;
+		var t2	= obj2.offsetTop;
+		var b2 	= obj2.offsetTop + obj2.offsetHeight;
+		
+		if(r < l2 || l > r2 || b < t2 || t > b2){
+			return null;	
+		}else{
+			return obj2;
+		}
+	}
+	
+	//获取属性
+	function getStyle(obj,attr){
+		return obj.currentStyle ? obj.currentStyle[attr] : getComputedStyle(obj)[attr];
+	}
+}
+</script>
+</head>
+
+<body>
+<ul>
+	<li><img src="images/bg.jpg"/><span>1</span></li>
+    <li><img src="images/bg.jpg"/><span>2</span></li>
+    <li><img src="images/bg.jpg"/><span>3</span></li>
+    <li><img src="images/bg.jpg"/><span>4</span></li>
+    <li><img src="images/bg.jpg"/><span>5</span></li>
+    <li><img src="images/bg.jpg"/><span>6</span></li>
+</ul>
+</body>
+</html>
