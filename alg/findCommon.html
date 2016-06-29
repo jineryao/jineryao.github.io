@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>公共项查找</title>
+<style>
+	body,p,div{margin:0;padding:0;}
+	div{margin:20px auto 0;}
+	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#CCC;}
+	.sample .re{padding-left:12px;color:#999;background:#f1f1f1;}
+</style>
+</head>
+
+<body>
+<div id="arr1" class="sample">
+    <p>示例:</p> 
+    <p>
+   		[[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"]
+    </p>
+    <p class="re"> 公共项[string转为number]  : </p>
+    <p class="re">公共项[string不转为number]: </p>
+</div>
+<div id="arr2" class="sample">
+	<p>最长字符串提取,示例: ['sdbsdspan','otipspanaqw','mitsxsaspan','asdspan']</p>
+    <p class="re"> 最长字符串: </p>
+</div>
+<script>
+	//提取公共项
+	var arr1 = [[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"],[2,6,3,8,9,"2"]];
+	var oArr1 = document.getElementById('arr1');
+	var oRe1 = oArr1.getElementsByClassName('re')[0];
+	var oRe2 = oArr1.getElementsByClassName('re')[1];
+	
+	oRe1.innerHTML += findArr(arr1);
+	oRe2.innerHTML += findArr2(arr1);
+	
+	//没有string, num数据混一起时
+	function findArr(arr){
+		var count = [] , json = {} , result = [];
+		
+		//清除子级数组内的相同项并链接一起
+		for(var i=0, len =arr.length ;i<len;i++){
+			count = count.concat(uq(arr[i]));
+		}
+		
+		//判断, 把相等的值加入key=值的数组内
+		for(i=0,  len=count.length; i<len ;i++){
+			if( !json[count[i]] ){
+				json[count[i]] = [count[i]];
+			}else{
+				json[count[i]].push(count[i]);
+			}
+		}
+		
+		//判断, 提取出json中个体数组的长度=数据长度的数据
+		for(var attr in json){
+			if(json[attr].length == arr.length){
+					result.push(attr);
+			}	
+		}
+		return result;
+	}
+	
+	function findArr2(arr){
+		var count = [] , json = {} , result = [];
+		
+		for(var i=0, len =arr.length ;i<len;i++){
+			count = count.concat(uq2(arr[i]));
+		}
+		
+		for(i=0,  len=count.length; i<len ;i++){
+			var n = typeof count[i] == 'string' ? '"'+count[i]+'"': count[i];
+			if( !json[n] ){
+				json[n] = [n];
+			}else{
+				json[n].push(n);
+			}
+		}
+		
+		for(var attr in json){
+			if(json[attr].length == arr.length){
+					result.push(attr);
+			}	
+		}
+		return result;
+	}
+	
+	//没有string, num混杂时
+	function uq(arr){
+		var result = [], count = {};
+		for(var i=0;i<arr.length;i++){
+			if(!count[arr[i]]){
+				count[arr[i]] = 1;
+				result.push(arr[i]);	
+			}
+		}
+		return result;
+	}
+	
+	//有string,num两种类型值时
+	function uq2(arr){
+		var re = [];
+		for(var i=0;i<arr.length;i++){
+			if(re.indexOf(arr[i]) == -1){
+				re.push(arr[i]);	
+			}
+		}
+		return re;
+	}
+	
+	
+	//最长字符串提取
+	var arr2 = ['sdbsdspan','otipspanaqw','mitsxsaspan','asdspan']
+	var oArr2 = document.getElementById('arr2');
+	var oRe2 = oArr2.children[1];
+	oRe2.innerHTML += maxStr(arr2);
+	
+	function maxStr(arr){
+		var count = 0,result = '';
+		arr.sort(function(a,b){
+			return a.length - b.length;
+		});
+		
+		//分解最短的字符串,作为判断依据
+		var str = arr.shift(), aStr = [];
+		for(var i=0;i<str.length;i++){
+			for(var j=i+1;j<=str.length;j++){
+				aStr.push(str.substring(i,j));
+			}
+		}
+		
+		for(i=0;i<aStr.length;i++){
+			var reg = new RegExp(aStr[i]);
+			var aMate = [];
+			//循环数组, 用分解的字符串匹配, 相同添加到aMate内,作为后续判断依据
+			for(j=0;j<arr.length;j++){
+					var re = arr[j].match(reg);
+					if(re){
+						aMate = aMate.concat(re);
+					}
+			}	
+			//判断这次字符串匹配到几次, 全部匹配则保存
+			if(aMate.length == arr.length){
+				//对比 上一个 匹配字符串 的长度, 长的保存
+				if(aMate[0].length > count){
+					count = aMate[0].length;
+					result = aMate[0];
+				} 
+			}
+		}
+		
+		return result;
+	}
+	
+	
+</script>
+</body>
+</html>

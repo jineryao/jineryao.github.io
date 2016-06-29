@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>重力运动</title>
+<style>
+body,div{margin:0;padding:0;}
+div{width:100px;height:100px;background:#f1f1f1;position:absolute;top:0;left:0;font-size:22px; font-weight:bold; line-height:100px;}
+</style>
+
+<script>
+window.onload = function(){
+	var speedX = 10, speedY = 8;
+	var d = document.body.children[0];
+	tMove(d,speedX,speedY);
+	
+	d.onmousedown = function (ev){
+		clearInterval(d.timer);
+		var ev = ev || event;
+		
+		var lastT = this.offsetTop;
+		var lastL = this.offsetLeft;
+		
+		var mT = ev.clientY - lastT;
+		var mL = ev.clientX - lastL;
+			
+		var maxT = document.documentElement.clientHeight - this.offsetHeight;
+		var maxL = document.documentElement.clientWidth - this.scrollWidth;
+	
+		document.onmousemove = function(ev){
+			var ev = ev || event;
+			var t = ev.clientY - mT;
+			var l = ev.clientX - mL;
+			console.log(maxL);
+			
+			t = t<0 ? 0 : ( t>maxT ? maxT : t);
+			l = l<0 ? 0 : ( l>maxL ? maxL : l);
+						
+			d.style.top = t + 'px';
+			d.style.left = l+ 'px';
+			
+			speedY = t - lastT;
+			speedX = l - lastL;
+			
+			lastT = t;
+			lastL = l;
+			
+		}
+		
+		document.onmouseup = function(){
+			document.onmousemove = document.onmouseup = null;
+			tMove(d,speedX,speedY);
+		}
+		
+		return false;	
+	}
+
+};
+
+
+function tMove(obj, speedX, speedY){
+		obj.timer = setInterval(function(){
+			
+			speedY += 3;  //重力
+			
+			var t = obj.offsetTop + speedY;
+			var l = obj.offsetLeft + speedX;
+			
+			if(t >= (document.documentElement.clientHeight - obj.offsetHeight)){
+				speedY *= -0.8;
+				speedX *= 0.8;
+				t  = document.documentElement.clientHeight - obj.offsetHeight;
+			}else if(t <= 0){
+				speedY *= -1;
+				t = 0;
+			}
+			
+			if(l >= (document.documentElement.clientWidth - obj.scrollWidth)){
+				speedX *= -0.8;	
+				speedY *= 0.8;
+				l = document.documentElement.clientWidth - obj.scrollWidth;
+			}else if(l <= 0){
+				speedX *= -0.8;
+				speedY *= 0.8;
+				l = 0;
+			}
+			
+			speedY = Math.abs(speedY) < 1 ? 0 : speedY;
+			speedX = Math.abs(speedX) < 1 ? 0 : speedX;
+			
+			if(speedY==0 && speedX==0 && t== document.documentElement.clientHeight - obj.offsetHeight){
+				clearInterval(obj.timer);
+			}
+			
+			obj.style.top = t + 'px';
+			obj.style.left = l + 'px';
+			
+		},30);	
+	}
+
+</script>
+</head>
+
+<body>
+<div>（=ˇωˇ=）</div>
+</body>
+</html>

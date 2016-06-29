@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>八皇后</title>
+<style>
+	body,div,ul{margin:0;padding:0;}
+	div{width:420px;margin:20px auto 0;padding:20px;border:1px solid #ccc;background:#f1f1f1;}
+	div ul{width:420px;height:420px;}
+	ul li{width:50px;height:50px;border:1px solid #ccc;list-style:none;float:left;background:#fff;}
+</style>
+</head>
+
+<body>
+<div>
+    <ul>
+    
+    </ul>
+</div>
+<script>
+var num = 4, pos=[], aPos=[], count = 0;
+var oUl = document.getElementsByTagName('ul')[0];
+var aLi = oUl.getElementsByTagName('li');
+
+for(var i=0;i<num;i++){
+	for(var j=0;j<num;j++){
+		var li = document.createElement('li');
+		li.x = j;
+		li.y = i;
+		li.index = -1;
+		li.innerHTML = j + ',' + i;
+		oUl.appendChild(li);
+	}
+}
+
+setQueens(0);
+console.log(count);
+
+function setQueens(x){
+	if(x == num){
+		aPos.push(pos.concat());
+		count++;
+		console.log('----------------------------------------');
+		return;	
+	}
+	console.log('--for--'+x +'----');
+	var y =0;
+	for(y=0;y<num;y++){
+		
+		var oLi = aLi[y+num*x];
+		if(oLi.index == -1){
+			oLi.index = x;
+			pos.push(oLi);
+			
+			var oX = oLi.x;
+			var oY = oLi.y;
+			
+			for(var i=0;i<aLi.length;i++){
+				if(aLi[i].index == -1 && (aLi[i].y == oY ||aLi[i].x == oX || aLi[i].y-aLi[i].x == oY - oX || aLi[i].y + aLi[i].x == oY + oX)){
+					aLi[i].index = x;	
+				}		
+			}
+			
+			console.log('set--'+(x +1));
+			setQueens(x+1);
+			
+			console.log('-------pop---'+x + ',' + y +'------');
+			pos.pop();
+			for(var i=0;i<aLi.length;i++){
+				if(aLi[i].index == x){
+					aLi[i].index = -1;
+				}
+			}
+			console.log('-------pop---'+x + ',' + y +'---end---');
+		}
+	}
+	console.log('-------for---'+x + ',' + y +'---end---');
+}
+</script>
+</body>
+</html>

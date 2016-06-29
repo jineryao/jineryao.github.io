@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>背包问题</title>
+<style>
+	body,p,div{margin:0;padding:0;}
+	div{margin:20px auto 0;}
+	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#CCC;}
+	.sample .re{padding-left:12px;color:#999;background:#f1f1f1;}
+</style>
+</head>
+
+<body>
+<div id="kk" class="sample">
+    <p>物品个数:5</p>
+    <p>背包容积:16</p>
+    <p>物品价值:[2,5,9,11,13]</p>
+    <p>物品体积:[3,4,7,8,9]</p>
+    <p class="re">[动态规划]背包能取得的最高价值: </p>
+    <p class="re">[贪心算法(未拆解)]背包能取得的最高价值: </p>
+    <p class="re">[贪心算法(拆解)]背包能取得的最高价值: </p>
+</div>
+<script>
+
+	var kk = document.getElementById('kk');
+	var re1 = kk.getElementsByClassName('re')[0];
+	var re2 = kk.getElementsByClassName('re')[1];
+	var re3 = kk.getElementsByClassName('re')[2];
+	var M 	= 5;
+	var W 	= 16;
+	var aP 	= [5,9,2,11,13];
+	var aW = [4,7,3,8,9];
+	
+	re1.innerHTML += dp(M,W,aP,aW);
+	re2.innerHTML += greed(M,W,aP,aW);
+	re3.innerHTML += greed2(M,W,aP,aW);
+	
+	//动态规划 [计算所有的可能性,对比得出容积能取得的最高值]
+	function dp(M,W,aP,aW){
+		var result = [];
+		for(var i=0;i<=M;i++){
+			result[i] = [];
+			for(var j=0;j<=W;j++){
+				if(i==0){
+					result[i][j] = 0;	
+				}else if(aW[i-1] > j){
+					result[i][j] = result[i-1][j];
+				}else{
+					result[i][j] = Math.max(aP[i-1]+result[i-1][j - aW[i-1]], result[i-1][j]);	
+				}
+			}	
+			console.log(result[i]);
+		}
+		return result[i-1][j-1];
+	}
+	
+	/*贪心算法 [计算物品性价比,根据性价比排序从高往低加入背包,剩余空间不能放入下一个完整物品, 则拆解物品加入背包..  如果不能拆解物品, 建议利用动态规划.. 因为贪心算法是根据性价比得出结果, 并不是最优选择]*/
+	//未拆解版
+	function greed(M,W,aP,aW){
+		var cost = [], result = 0;
+		for(var i=0;i<M;i++){
+			cost.push({ w:aW[i] , p:aP[i] , r:aP[i]/aW[i] });
+		}
+		
+		cost.sort(function(a,b){
+			return b.r - a.r;
+		});
+		//console.log(cost);
+		
+		for(var j=0;j<cost.length;j++){
+			if(W - cost[j].w > 0){
+				result += cost[j].p;
+				W -= cost[j].w;
+			}
+		}
+		//console.log(W);
+		
+		return result.toFixed(2);
+	}
+	
+	//拆解版
+	function greed2(M,W,aP,aW){
+		var cost = [], result = 0;
+		for(var i=0;i<M;i++){
+			cost.push({ w:aW[i] , p:aP[i] , r:aP[i]/aW[i] });
+		}
+		
+		cost.sort(function(a,b){
+			return b.r - a.r;
+		});
+		//console.log(cost);
+		
+		for(var j=0;j<cost.length;j++){
+			if(W - cost[j].w > 0){
+				result += cost[j].p;
+				W -= cost[j].w;
+			}else{
+				console.log(W);
+				result += W / cost[j].w * cost[j].p;
+				break;
+			}
+		}
+		//console.log(W);
+		return result.toFixed(2);
+	}
+	
+</script>
+</body>
+</html>
+   

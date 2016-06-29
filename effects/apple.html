@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>简易菜单</title>
+<style type="text/css">
+body,div,p,ul{margin:0;padding:0;}
+li{list-style:none;}
+img{vertical-align:middle;border:0;}
+a{font-size:12px; text-decoration:none;color:#7F7F93;}
+body{background:#EBEBED;}
+#box{width:980px;margin:20px auto 0;background:#fff;border:1px solid #D0D0D2;}
+#con{width:780px;height:160px;margin:0 100px;overflow:hidden;}
+#con ul{position:relative; }
+#con li{width:130px;height:160px;float:left; text-align:center;}
+#con img{width:130px;}
+
+#lis{width:980px;height:30px;background:url(../images/apple/nav_bg.png) no-repeat; position:relative; text-align:center;}
+#lis span{width:13px;height:8px; display:block; position:absolute;top:0;left:0;background:url(../images/apple/caret_active.png) no-repeat 0 0;}
+#lis a{display:inline-block;line-height:30px;margin:0 15px;}
+</style>
+<script type="text/javascript" src="miaov-2.js"></script>
+<script type="text/javascript">
+window.onload = function(){
+	 var oCon = document.getElementById('con');
+	 var aLi = oCon.getElementsByTagName('li');
+	 var oLis = document.getElementById('lis');
+	 var oSpan = oLis.children[0];
+	 var aA = oLis.getElementsByTagName('a');
+	 
+	 var len = 6;
+	 var c = [],l = [],left = [];
+	 for(var i=0;i<aLi.length;i++){
+		 var li = aLi[i];
+		 if(i<len){
+			 //li.style.top = li.offsetTop + 'px'
+			 li.style.left = li.offsetLeft + 'px';
+			 left.push(li.offsetLeft);
+		 }else{
+			//li.style.top = aLi[len-1].offsetTop + 'px'; 
+			li.style.left = aLi[len-1].offsetLeft + li.offsetWidth + 'px'; 
+		}
+	}
+	
+	c.push(aLi[len-1].offsetLeft +aLi[len].offsetWidth+30);
+	c.push(-aLi[0].offsetWidth-30);
+	
+	for(var i=0;i<aA.length;i++){
+		l.push(aA[i].offsetLeft + (aA[i].offsetWidth/2));
+		aA[i].index = i;
+		aA[i].onclick = function(){
+			oCon.index = this.index;
+			doMove(oSpan,'left',10,l[this.index]);
+			aA[0] = aA[1] = 'none';
+			
+			var target = c[oCon.index];
+			var i ,i2;
+			if(oCon.index){
+				i = i2 =0;
+				bufferMove(aLi[i],'left',target);
+				i++;
+				var t = setInterval(function(){
+					if(i < len){
+						bufferMove(aLi[i],'left',target);
+						i++;
+					}else{
+						clearInterval(t);	
+						t = setInterval(function(){
+							if(i < aLi.length){
+								elasticMove(aLi[i],'left',left[i2]);
+								i2++;
+								i++;
+							}else{
+								clearInterval(t);
+							}
+						},100);
+					}
+				},100);
+			}else{
+				i = aLi.length - 1;
+				bufferMove(aLi[i],'left',target);
+				i--;
+				var t = setInterval(function(){
+					if(i >= len){
+						bufferMove(aLi[i],'left',target);
+						i--;
+					}else{
+						clearInterval(t);	
+						t = setInterval(function(){
+							if(i >= 0){
+								elasticMove(aLi[i],'left',left[i]);
+								i--;
+							}else{
+								clearInterval(t);
+							}
+						},100);
+					}
+				},100);
+			}
+			
+		}	
+	}
+	oSpan.style.left =  l[0] + 'px';
+	
+	 for(var i=0;i<aLi.length;i++){
+		 aLi[i].style.position = 'absolute';
+	 }
+	 
+	 
+}
+
+//缓冲移动: obj移动的对象; 
+//              attr : 'top/left' -上下/左右移动 ,'width/height' - 长/高,''度; 
+//                       'fontSize' -元素内的字体大小; 'borderWidth' - 元素边框大小
+//						  'opacity' - 透明度 等等 
+//	                      [为了兼容ie8,需要在obj样式手动添加opacity:x]
+//				 target移动的目标;endFn 回调函数
+function bufferMove( obj, attr, target,  endFn ) {
+	clearInterval( obj.timer );
+	obj.timer = setInterval(function () {
+		var oAttr;
+		if(attr == 'opacity'){
+			//尽可能不要使用小数
+			oAttr = parseInt(parseFloat(getStyle( obj, attr )) * 100);
+		}else{
+			oAttr = parseInt(getStyle( obj, attr ));	
+		}
+		var speed = (target - oAttr) / 4;
+		speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+		oAttr += speed;
+		
+		if(attr == 'opacity'){
+			obj.style.filter = 'alpha(opacity:'+oAttr+')';
+			obj.style.opacity = oAttr / 100;
+		}else{
+			obj.style[attr] = oAttr + 'px';
+		}
+		
+		if ( oAttr == target ) {
+			clearInterval( obj.timer );
+			endFn && endFn(obj);
+		}
+		
+	}, 30);
+}
+
+function elasticMove(obj, attr, target, endFn){
+	clearInterval( obj.timer );
+	
+	obj.timer = setInterval(function(){
+		var oAttr = parseInt(getStyle(obj, attr));
+		//取上一次的弹性运动速度,没有就=0
+		var speed = obj.eSpeed ? obj.eSpeed : 0;  
+		//计算当次弹性运动的速度
+		speed += (target - oAttr)/4; 
+		//给弹性运动增加摩擦力 [损耗]
+		speed *= 0.7;
+		
+		var maxSpeed=65;
+		if(Math.abs(speed)>maxSpeed)
+		{
+			speed=speed>0?maxSpeed:-maxSpeed;
+		}
+		
+		oAttr += speed;
+		
+		//保存这次的弹性运动速度
+		obj.eSpeed = speed;
+		
+		console.log(oAttr - target);
+		
+		obj.style[attr] =oAttr + 'px';
+		
+		//当差值小于1px时, 关闭定时器
+		if(Math.abs(oAttr - target) < 1 ){
+			obj.style[attr] = target + 'px';
+			obj.eSpeed = 0;
+			clearInterval( obj.timer );
+			endFn && endFn(obj);	
+		}
+	},30);
+}
+
+
+//移动函数: obj移动的对象; attr  'top' 上下移动 , 'left' 左右移动;  
+//				   dir,移动的步长; target移动的幅度; endFn 回调函数
+function doMove ( obj, attr, dir, target, endFn ) {
+	dir = parseInt(getStyle( obj, attr )) < target ? dir : -dir;
+	clearInterval( obj.timer );
+	obj.timer = setInterval(function () {
+		var speed = parseInt(getStyle( obj, attr )) + dir;			// 步长
+		if ( speed > target && dir > 0 ||  speed < target && dir < 0  ) {
+			speed = target;
+		}
+		obj.style[attr] = speed + 'px';
+		if ( speed == target ) {
+			clearInterval( obj.timer );
+			/*
+			if ( endFn ) {
+				endFn();
+			}
+			*/
+			endFn && endFn(obj);
+		}
+	}, 30);
+}
+
+//获取obj的属性值,兼容浏览器
+function getStyle ( obj, attr ) { 
+	return obj.currentStyle?obj.currentStyle[attr] : getComputedStyle( obj )[attr]; 
+}
+</script>
+</head>
+
+<body>
+ <div id="box">
+ 	<div id="con">
+    	<ul>
+        	<li><a href="javascript:;"><img src="../images/apple/1.jpg">iPod shuffle</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/2.jpg">iPod nano</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/3.jpg">iPod classic</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/4.jpg">iPod touch</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/5.jpg">Apple TV</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/6.jpg">Accessories</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/7.jpg">Download iTunes 10</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/8.jpg">Tunes Gift Cards</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/9.jpg">Nike + iPod</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/10.jpg">(PRODUCT) RED</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/11.jpg">MobileMe</a></li>
+            <li><a href="javascript:;"><img src="../images/apple/12.jpg">In-Ear Headphone</a></li>
+        </ul>
+    </div>
+    <div id="lis">
+        <span></span>
+    	<a href="javascript:;">Products</a>
+        <a href="javascript:;">iTunes and more</a>
+    </div>
+ </div>
+</body>
+</html>

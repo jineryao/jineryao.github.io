@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style>
+	body,div,ul{margin:0;padding:0;}
+	ul{width:980px;margin:20px auto 0;}
+	ul:after{content:'';display:block;clear:both;}
+	li{list-style:none;float:left;margin-left:10px;}
+	li div{width:232px;border:1px solid #ccc;margin-bottom:10px;}
+	li img{width:232px;}
+	li p{width:232px;margin-top:10px; overflow:hidden;}
+</style>
+<script>
+	window.onload = function(){
+		var aLi = document.getElementsByTagName('li');
+		var page = 1;
+		var onOff = true;
+		get();
+		
+		function get(){
+			if(!onOff) return;
+			ajax('get','getPics.php','cpage='+page,function(data){
+				var arr = JSON.parse(data);
+				for(var i=0;i<arr.length;i++){
+					var oD = document.createElement('div');
+					var oImg = document.createElement('img');
+					oImg.src = arr[i].image;
+					oImg.style.height = arr[i].height * (232 / arr[i].width) + 'px';
+					oD.appendChild(oImg);
+					if(arr[i].title){
+						var oP = document.createElement('p');
+						oP.innerHTML = arr[i].title;
+						oD.appendChild(oP);
+					}
+					var num = getH();
+					aLi[num].appendChild(oD);
+				}
+				onOff = true;
+			});		
+		}
+		
+		window.onscroll = function(){
+			var i = getH();
+			var t = getTop(aLi[i]) + aLi[i].offsetHeight-500;
+			var scrollT = document.documentElement.scrollTop || document.body.scrollTop;
+			var sT = scrollT + document.documentElement.clientHeight;
+			if(t < sT && onOff){
+				page++;
+				get();
+				onOff = false;
+				console.log(page);
+			}
+		}
+		
+		function getH(){
+			var index = 0;
+			for(var i=0;i<aLi.length;i++){
+				if(aLi[index].offsetHeight > aLi[i].offsetHeight){
+					index = i;	
+				}
+			}	
+			return index;
+		}
+		
+		function getTop(obj){
+			var t=0;
+			while(obj){
+				t += obj.offsetTop;
+				obj = obj.offsetParent;
+			}
+			return t;
+		}
+	};
+
+	function ajax(rm, url, data, callback){
+		var xhr;
+		if(window.XMLHttpRequest){
+			xhr = new XMLHttpRequest();
+		}else{
+			xhr = new new ActiveXObject('Microsoft.XMLHTTP');
+		}
+		
+		if(rm === 'get'){
+			if(data){
+				url += '?' + data + '&' + new Date().getTime();	
+			}
+			xhr.open('get',url,true);
+			xhr.send();
+		}else{
+			xhr.open('post',url,true);
+			xhr.setRequestHeader('content-type','application/x-www-form-urlencoded');
+			xhr.send(data);
+		}
+		
+		
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4){
+				if ( xhr.status == 200 ) {
+					callback && callback(xhr.responseText );
+				}else{
+					alert('出错了,Err：' + xhr.status);
+				}
+			}
+		}
+	}
+</script>
+</head>
+
+<body>
+<ul>
+	<li>
+    </li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+</body>
+</html>

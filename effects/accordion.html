@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>切图</title>
+<style>
+body,div,ul{margin:0;padding:0;}
+li{list-style: none;}
+img{border:0; vertical-align:top;}
+
+#box{width:855px;height:340px;border:1px solid #FCF;overflow:hidden;position:absolute;top:20px;left:0;}
+#box ul{width:855px;height:340px;position:relative;}
+#box li{width:650px;height:340px;border-right:1px solid #f1f1f1;position:absolute;top:0;}
+#box .content{width:600px;height:340px;float:left;}
+#box .content img{width:600px;height:340px;}
+#box .tag{width:50px;line-height:340px;text-align:center;float:left;background:#fff;}
+</style>
+<script src="miaov.js"></script>
+<script>
+window.onload = function(){
+	var oBox = document.getElementById('box');
+	accordion(oBox);
+	bufferMove(oBox,'left',parseInt((document.documentElement.clientWidth-oBox.offsetWidth) / 2));	
+	
+};
+
+function accordion(obj){
+		var aLi = obj.getElementsByTagName('li');
+		var index=0;
+		
+		if(aLi.length){
+			for(var i=aLi.length-1,j=0;i>=0;i--,j++){
+					aLi[i].style.left = i*51 + 'px';
+					aLi[i].children[1].index =i ;
+					aLi[i].style.zIndex = j;
+					aLi[i].children[0].innerHTML = '<img src="../images/accordion/'+(i+1)+'.jpg"/>';
+	
+					aLi[i].children[1].onmousemove = function(){
+						if(index !== this.index && index < this.index){
+							index = this.index;
+							for(var i=0;i<this.index;i++){
+								//doMove(aLi[i],'left',50,i*51-600);
+								bufferMove(aLi[i],'left',i*51-600);
+							}
+						}else if(index !== this.index && index > this.index){
+							index = this.index;
+							for(var i=index;i<aLi.length;i++){
+								//doMove(aLi[i],'left',50,i*51);
+								bufferMove(aLi[i],'left',i*51);
+							}
+						}
+					}
+			}	
+		}
+		
+}
+
+function bufferMove ( obj, attr, target,  endFn ) {
+	clearInterval( obj.timer );
+	obj.timer = setInterval(function () {
+		var oAttr = parseInt(getStyle( obj, attr ));
+		var speed = (target - oAttr) / 10 ;
+		speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+		oAttr += speed;
+
+		obj.style[attr] = oAttr + 'px';
+		
+		if ( oAttr == target ) {
+			clearInterval( obj.timer );
+			/*
+			if ( endFn ) {
+				endFn();
+			}
+			*/
+			endFn && endFn(obj);
+		}
+		
+	}, 30);
+}
+
+//获取obj的属性值,兼容浏览器
+function getStyle ( obj, attr ) { 
+	return obj.currentStyle?obj.currentStyle[attr] : getComputedStyle( obj )[attr]; 
+}
+</script>
+</head>
+
+<body>
+<div id="box">
+	<ul>
+    	<li>
+        	<div class="content"></div>
+            <div class="tag">1</div>
+        </li>
+        <li>
+        	<div class="content"></div>
+            <div class="tag">2</div>
+        </li>
+        <li>
+        	<div class="content"></div>
+            <div class="tag">3</div>
+        </li>
+        <li>
+        	<div class="content"></div>
+            <div class="tag">4</div>
+        </li>
+        <li>
+        	<div class="content"></div>
+            <div class="tag">5</div>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
