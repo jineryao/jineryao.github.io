@@ -15,7 +15,7 @@ img{border:0; vertical-align:top;}
 #box .content img{width:600px;height:340px;}
 #box .tag{width:50px;line-height:340px;text-align:center;float:left;background:#fff;}
 </style>
-<script src="miaov.js"></script>
+<script src="../js/utility.js"></script>
 <script>
 window.onload = function(){
 	var oBox = document.getElementById('box');
@@ -53,34 +53,6 @@ function accordion(obj){
 			}	
 		}
 		
-}
-
-function bufferMove ( obj, attr, target,  endFn ) {
-	clearInterval( obj.timer );
-	obj.timer = setInterval(function () {
-		var oAttr = parseInt(getStyle( obj, attr ));
-		var speed = (target - oAttr) / 10 ;
-		speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
-		oAttr += speed;
-
-		obj.style[attr] = oAttr + 'px';
-		
-		if ( oAttr == target ) {
-			clearInterval( obj.timer );
-			/*
-			if ( endFn ) {
-				endFn();
-			}
-			*/
-			endFn && endFn(obj);
-		}
-		
-	}, 30);
-}
-
-//获取obj的属性值,兼容浏览器
-function getStyle ( obj, attr ) { 
-	return obj.currentStyle?obj.currentStyle[attr] : getComputedStyle( obj )[attr]; 
 }
 </script>
 </head>

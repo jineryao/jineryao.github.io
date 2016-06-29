@@ -6,8 +6,8 @@
 <style>
 	body,p,div{margin:0;padding:0;}
 	div{margin:20px auto 0;}
-	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#CCC;}
-	.sample .re{padding-left:12px;color:#999;background:#f1f1f1;}
+	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#f1f1f1;}
+	.sample .re{padding-left:12px;color:#F65;background:#fff;}
 </style>
 </head>
 
@@ -15,7 +15,7 @@
 <div id="arr1" class="sample">
     <p>示例:</p> 
     <p>
-   		[[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"]
+   		[[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"]]
     </p>
     <p class="re"> 公共项[string转为number]  : </p>
     <p class="re">公共项[string不转为number]: </p>
@@ -26,29 +26,41 @@
 </div>
 <script>
 	//提取公共项
-	var arr1 = [[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"],[2,6,3,8,9,"2"]];
+	var arr1 = [[2,4,2,7,8,3,"2"],[2,8,3,5,8,6,"2"],[2,1,0,3,9,8,5,4,"2"]];
 	var oArr1 = document.getElementById('arr1');
 	var oRe1 = oArr1.getElementsByClassName('re')[0];
 	var oRe2 = oArr1.getElementsByClassName('re')[1];
 	
-	oRe1.innerHTML += findArr(arr1);
-	oRe2.innerHTML += findArr2(arr1);
+	oRe1.innerHTML += findArr(arr1,false);
+	oRe2.innerHTML += findArr(arr1,true);  
 	
-	//没有string, num数据混一起时
-	function findArr(arr){
+	//onOff 决定是否需要判断string
+	function findArr(arr,onOff){
 		var count = [] , json = {} , result = [];
+		
+		//判断使用哪种去重方式,其实可以不判断,恩..
+		var u = onOff ? uq2 : uq;
 		
 		//清除子级数组内的相同项并链接一起
 		for(var i=0, len =arr.length ;i<len;i++){
-			count = count.concat(uq(arr[i]));
+			count = count.concat(u(arr[i]));
 		}
 		
-		//判断, 把相等的值加入key=值的数组内
+		//判断, 把相等的值加入 attr : [数组]
 		for(i=0,  len=count.length; i<len ;i++){
-			if( !json[count[i]] ){
-				json[count[i]] = [count[i]];
+			var n = '';
+			
+			if(onOff){
+				//先判断开关, 减少不必要的判断 [项的类型].. 应该有必要,恩..?.?
+				n = typeof count[i] == 'string' ?  '"'+count[i] +'"' : count[i];
 			}else{
-				json[count[i]].push(count[i]);
+				n = count[i];
+			}
+			
+			if( !json[n] ){
+				json[n] = [n];
+			}else{
+				json[n].push(n);
 			}
 		}
 		
@@ -61,36 +73,14 @@
 		return result;
 	}
 	
-	function findArr2(arr){
-		var count = [] , json = {} , result = [];
-		
-		for(var i=0, len =arr.length ;i<len;i++){
-			count = count.concat(uq2(arr[i]));
-		}
-		
-		for(i=0,  len=count.length; i<len ;i++){
-			var n = typeof count[i] == 'string' ? '"'+count[i]+'"': count[i];
-			if( !json[n] ){
-				json[n] = [n];
-			}else{
-				json[n].push(n);
-			}
-		}
-		
-		for(var attr in json){
-			if(json[attr].length == arr.length){
-					result.push(attr);
-			}	
-		}
-		return result;
-	}
 	
 	//没有string, num混杂时
 	function uq(arr){
 		var result = [], count = {};
 		for(var i=0;i<arr.length;i++){
-			if(!count[arr[i]]){
-				count[arr[i]] = 1;
+			if(!count[arr[i]]){ 
+				//不分为两个方法去重, 这里可以直接保存key的类型,需要时根据value判断即可
+				count[arr[i]] = 1;  
 				result.push(arr[i]);	
 			}
 		}

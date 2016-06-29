@@ -4,23 +4,26 @@
 <meta charset="utf-8">
 <title>八皇后</title>
 <style>
-	body,div,ul{margin:0;padding:0;}
+	body,div,ul,h2{margin:0;padding:0;}
 	div{width:420px;margin:20px auto 0;padding:20px;border:1px solid #ccc;background:#f1f1f1;}
 	div ul{width:420px;height:420px;}
 	ul li{width:50px;height:50px;border:1px solid #ccc;list-style:none;float:left;background:#fff;}
+	.q{ background:url(../images/queens_bg.png) no-repeat; background-size:cover;}
 </style>
 </head>
 
 <body>
+<h2>次数:</h2>
 <div>
     <ul>
     
     </ul>
 </div>
 <script>
-var num = 4, pos=[], aPos=[], count = 0;
+var num = 8, pos=[], aPos=[], count = 0;
 var oUl = document.getElementsByTagName('ul')[0];
 var aLi = oUl.getElementsByTagName('li');
+var oH = document.getElementsByTagName('h2')[0];
 
 for(var i=0;i<num;i++){
 	for(var j=0;j<num;j++){
@@ -28,28 +31,27 @@ for(var i=0;i<num;i++){
 		li.x = j;
 		li.y = i;
 		li.index = -1;
-		li.innerHTML = j + ',' + i;
 		oUl.appendChild(li);
 	}
 }
 
 setQueens(0);
-console.log(count);
+oH.innerHTML += count;
+show(aPos);
 
-function setQueens(x){
-	if(x == num){
+function setQueens(y){
+	if(y == num){
 		aPos.push(pos.concat());
 		count++;
-		console.log('----------------------------------------');
-		return;	
+		return;	//防止y值超出行数大小
 	}
-	console.log('--for--'+x +'----');
-	var y =0;
-	for(y=0;y<num;y++){
+	
+	for(var x=0;x<num;x++){  //当x>num时, 此方法正常结束
 		
-		var oLi = aLi[y+num*x];
+		var oLi = aLi[x+num*y];
 		if(oLi.index == -1){
-			oLi.index = x;
+			oLi.index = y;
+			oLi.innerHTML = y;
 			pos.push(oLi);
 			
 			var oX = oLi.x;
@@ -57,24 +59,42 @@ function setQueens(x){
 			
 			for(var i=0;i<aLi.length;i++){
 				if(aLi[i].index == -1 && (aLi[i].y == oY ||aLi[i].x == oX || aLi[i].y-aLi[i].x == oY - oX || aLi[i].y + aLi[i].x == oY + oX)){
-					aLi[i].index = x;	
+					aLi[i].index = y;	
+					aLi[i].innerHTML = y;
 				}		
 			}
 			
-			console.log('set--'+(x +1));
-			setQueens(x+1);
+			//递归
+			setQueens(y+1);
 			
-			console.log('-------pop---'+x + ',' + y +'------');
+			//回溯
 			pos.pop();
 			for(var i=0;i<aLi.length;i++){
-				if(aLi[i].index == x){
+				if(aLi[i].index == y){
 					aLi[i].index = -1;
+					aLi[i].innerHTML = '';
 				}
 			}
-			console.log('-------pop---'+x + ',' + y +'---end---');
+			//清除完成, for循环完成一次, 所以..再次运行for循环 从x++开始;
+			//x值还是阻塞那一刻的值,应该因为递归是算作新的函数作用域,影响不到外层x的值
 		}
 	}
-	console.log('-------for---'+x + ',' + y +'---end---');
+}
+
+function show(aPos){
+	var i = 0, len = aPos.length;
+	var timer = setInterval(function(){
+		for(var j = 0;j<num*num;j++){
+			aLi[j].className = '';
+		}	
+		for(j = 0;j<num;j++){
+			aPos[i][j].className = 'q';
+		}	
+		i++;
+		if(i==len){
+			clearInterval(timer);
+		}
+	},1000);
 }
 </script>
 </body>

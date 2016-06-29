@@ -19,7 +19,7 @@ body{background:#EBEBED;}
 #lis span{width:13px;height:8px; display:block; position:absolute;top:0;left:0;background:url(../images/apple/caret_active.png) no-repeat 0 0;}
 #lis a{display:inline-block;line-height:30px;margin:0 15px;}
 </style>
-<script type="text/javascript" src="miaov-2.js"></script>
+<script src="../js/utility.js"></script>
 <script type="text/javascript">
 window.onload = function(){
 	 var oCon = document.getElementById('con');
@@ -41,14 +41,16 @@ window.onload = function(){
 			li.style.left = aLi[len-1].offsetLeft + li.offsetWidth + 'px'; 
 		}
 	}
-	
+	oCon.index = 0;
 	c.push(aLi[len-1].offsetLeft +aLi[len].offsetWidth+30);
 	c.push(-aLi[0].offsetWidth-30);
 	
 	for(var i=0;i<aA.length;i++){
 		l.push(aA[i].offsetLeft + (aA[i].offsetWidth/2));
 		aA[i].index = i;
+		
 		aA[i].onclick = function(){
+			if(this.index == oCon.index){return;}
 			oCon.index = this.index;
 			doMove(oSpan,'left',10,l[this.index]);
 			aA[0] = aA[1] = 'none';
@@ -61,7 +63,7 @@ window.onload = function(){
 				i++;
 				var t = setInterval(function(){
 					if(i < len){
-						bufferMove(aLi[i],'left',target);
+						bufferMove_(aLi[i],'left',target);
 						i++;
 					}else{
 						clearInterval(t);	
@@ -82,7 +84,7 @@ window.onload = function(){
 				i--;
 				var t = setInterval(function(){
 					if(i >= len){
-						bufferMove(aLi[i],'left',target);
+						bufferMove_(aLi[i],'left',target);
 						i--;
 					}else{
 						clearInterval(t);	
@@ -109,13 +111,7 @@ window.onload = function(){
 	 
 }
 
-//缓冲移动: obj移动的对象; 
-//              attr : 'top/left' -上下/左右移动 ,'width/height' - 长/高,''度; 
-//                       'fontSize' -元素内的字体大小; 'borderWidth' - 元素边框大小
-//						  'opacity' - 透明度 等等 
-//	                      [为了兼容ie8,需要在obj样式手动添加opacity:x]
-//				 target移动的目标;endFn 回调函数
-function bufferMove( obj, attr, target,  endFn ) {
+function bufferMove_( obj, attr, target,  endFn ) {
 	clearInterval( obj.timer );
 	obj.timer = setInterval(function () {
 		var oAttr;
@@ -125,7 +121,7 @@ function bufferMove( obj, attr, target,  endFn ) {
 		}else{
 			oAttr = parseInt(getStyle( obj, attr ));	
 		}
-		var speed = (target - oAttr) / 4;
+		var speed = (target - oAttr) / 3;
 		speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
 		oAttr += speed;
 		
@@ -144,71 +140,6 @@ function bufferMove( obj, attr, target,  endFn ) {
 	}, 30);
 }
 
-function elasticMove(obj, attr, target, endFn){
-	clearInterval( obj.timer );
-	
-	obj.timer = setInterval(function(){
-		var oAttr = parseInt(getStyle(obj, attr));
-		//取上一次的弹性运动速度,没有就=0
-		var speed = obj.eSpeed ? obj.eSpeed : 0;  
-		//计算当次弹性运动的速度
-		speed += (target - oAttr)/4; 
-		//给弹性运动增加摩擦力 [损耗]
-		speed *= 0.7;
-		
-		var maxSpeed=65;
-		if(Math.abs(speed)>maxSpeed)
-		{
-			speed=speed>0?maxSpeed:-maxSpeed;
-		}
-		
-		oAttr += speed;
-		
-		//保存这次的弹性运动速度
-		obj.eSpeed = speed;
-		
-		console.log(oAttr - target);
-		
-		obj.style[attr] =oAttr + 'px';
-		
-		//当差值小于1px时, 关闭定时器
-		if(Math.abs(oAttr - target) < 1 ){
-			obj.style[attr] = target + 'px';
-			obj.eSpeed = 0;
-			clearInterval( obj.timer );
-			endFn && endFn(obj);	
-		}
-	},30);
-}
-
-
-//移动函数: obj移动的对象; attr  'top' 上下移动 , 'left' 左右移动;  
-//				   dir,移动的步长; target移动的幅度; endFn 回调函数
-function doMove ( obj, attr, dir, target, endFn ) {
-	dir = parseInt(getStyle( obj, attr )) < target ? dir : -dir;
-	clearInterval( obj.timer );
-	obj.timer = setInterval(function () {
-		var speed = parseInt(getStyle( obj, attr )) + dir;			// 步长
-		if ( speed > target && dir > 0 ||  speed < target && dir < 0  ) {
-			speed = target;
-		}
-		obj.style[attr] = speed + 'px';
-		if ( speed == target ) {
-			clearInterval( obj.timer );
-			/*
-			if ( endFn ) {
-				endFn();
-			}
-			*/
-			endFn && endFn(obj);
-		}
-	}, 30);
-}
-
-//获取obj的属性值,兼容浏览器
-function getStyle ( obj, attr ) { 
-	return obj.currentStyle?obj.currentStyle[attr] : getComputedStyle( obj )[attr]; 
-}
 </script>
 </head>
 
