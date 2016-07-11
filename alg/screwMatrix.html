@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>螺旋矩阵</title>
+<style>
+	body,ul{margin:0;padding:0;}
+	ul{border:1px solid #ccc;margin:20px auto 0;}
+	li{float:left;width:40px;height:40px;border:1px solid #ccc; text-align:center; font: 14px/40px bold Arial, Helvetica, sans-serif;list-style:none;}
+</style>
+</head>
+
+<body>
+<ul></ul>
+<script>
+	var size = 8, x = 0, row = 0;
+	var max = size - 1, min = 0;
+	var r = 0, b = 120;
+	
+	var oUl = document.body.children[0];
+	var aLi = document.getElementsByTagName('li');
+	oUl.style.width = 42*size + 'px'; 
+	oUl.style.height = 42*size + 'px'; 
+	
+	for(var i=0;i<size;i++){
+		for(var j=0;j<size;j++){
+			var li = document.createElement('li');
+			oUl.appendChild(li);	
+		}
+	}
+	
+	screw(aLi);
+	
+	//得出螺旋矩阵的行径
+	function screw(aLi){
+		for(var i=0;i<aLi.length;i++){
+			aLi[row*size + x].innerHTML = i;
+			aLi[row*size + x].style.backgroundColor = 'rgb('+r+','+b+',65)';
+			 r += 4, b+=2;
+			if(row < max && x == min){
+				row++;	
+			}else if(row == max && x < max){
+				x++;	
+			}else if(x == max && row > min){
+				row--;
+			}else if(row == min && x > min){
+				x--;
+			}
+			
+			//根据行列的位置计算得出第4轮,重新计算min ,max
+			if(x - min == 1 && row == min){
+				min++;
+				max--;
+			}
+		}
+	}
+	
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>光束</title>
+<style>
+	body,div{margin:0;padding:0;}
+	body{background:#ccc;}
+	
+	div{width:600px;height:337px;margin:20px auto;background:-webkit-linear-gradient(-35deg, rgba(200,200,200,0) 250px,rgba(245,245,245,0.9) 305px,rgba(255,255,255,0.9) 325px,rgba(200,200,200,0) 380px)   no-repeat -380px 0, url(../images/beam_bg.jpg) no-repeat  0 0;background-size:cover;}
+</style>
+</head>
+<body>
+<div></div>
+
+<script>
+	var oD = document.getElementsByTagName('div')[0];
+	var t = -380;
+	
+	setInterval(function(){
+		t+=12;
+		if(t >= 1000){
+			t = -380;
+		}
+		oD.style.backgroundPosition = t+ "px 0px,0px 0px";
+	},20);
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>排列组合</title>
+<style>
+	body,p,div{margin:0;padding:0;}
+	div{margin:20px auto 0;}
+	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#f1f1f1;}
+	.sample .re{padding-left:12px;color:#F65;background:#fff; word-wrap:break-word;}
+</style>
+</head>
+
+<body>
+<div id="arr1" class="sample">
+    <p>示例:</p> 
+    <p>
+   		['A','B','C','D']
+    </p>
+    <p class="re">有序排列: </p>
+    <p class="re">无序组合: </p>
+</div>
+<script>
+var arr = ['A','B','C','D'];
+
+var oArr1 = document.getElementById('arr1');
+var oRe1 = oArr1.getElementsByClassName('re')[0];
+var oRe2 = oArr1.getElementsByClassName('re')[1];
+oRe1.innerHTML += aCombination(arr,3);
+oRe2.innerHTML += cCombination(arr,3);
+
+//取有序组合 [相同的项,不同的排序单独成一组]
+function aCombination(arr,n){
+
+	var iNow = 1, result = [], arrNow=0;
+	
+	if(n == 1){
+		arr.push(arr.length);
+		return arr;	
+	}
+	
+
+	(function (arr,iNow,str){
+		for(var i=0;i<arr.length;i++){
+			var arrCon = arr.concat();
+			var con = str;
+			con += arrCon.splice(i,1);
+			
+			if(iNow == n){
+				for(var j=0;j<arrCon.length;j++){
+					arrNow++;
+					result.push(con+arrCon[j]);
+				}
+			}else{
+				arguments.callee(arrCon,iNow+1,con);	
+			}
+		}	
+	})(arr,iNow+1,'');
+		
+	result.push(arrNow);
+	return result;
+}
+
+//取无序组合 [不管排序,必须是不相同的项组合为一组]
+function cCombination(arr,n){
+	var mts = aCombination(arr,n);
+	mts.pop();
+	var result = [];
+	
+	for(var i=0;i<mts.length;i++){
+		mts[i] = mts[i].split('').sort().join('');		
+	}
+	
+	for(var i=0;i<mts.length;i++){
+		if(result.indexOf(mts[i])==-1){
+			result.push(mts[i]);
+		}
+	}
+	result.push(result.length);
+	
+	return result;
+}
+</script>
+</body>
+</html>

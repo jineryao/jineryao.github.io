@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>行列互换矩阵</title>
+<style>
+	body,ul{margin:0;padding:0;}
+	ul{border:1px solid #ccc;margin:20px auto 0;}
+	li{list-style:none;float:left;width:40px;height:40px;border:1px solid #ccc; text-align:center; font: 14px/40px bold Arial, Helvetica, sans-serif;}
+</style>
+</head>
+
+<body>
+<h2>单击图标, 行列交换</h2>
+<ul></ul>
+
+<script>
+	var size =8;
+	var oUl = document.body.getElementsByTagName('ul')[0];
+	var aLi = document.getElementsByTagName('li');
+	
+	oUl.style.width = 42*size + 'px'; 
+	oUl.style.height = 42*size + 'px'; 
+	
+	oUl.onclick = function(){
+		var arr = swop(aLi,size);
+		for(var i=0;i<arr.length;i++){
+			oUl.appendChild(arr[i]);	
+		}
+	}
+	
+	for(var i=0;i<size;i++){
+		for(var j=0;j<size;j++){
+			var li = document.createElement('li');
+			li.innerHTML = i*size + j;
+			oUl.appendChild(li);	
+		}
+	}
+	
+	function swop(arr,size){
+		var result=[],index=0;
+		(function(){
+			
+			//1.循环次数=行数, 根据计算得出符合要求的li
+			for(var i=0;i<size;i++){
+				result.push(arr[index+i*size]);
+			}
+			
+			/*	
+			2.遍历li的集合, 根据li的索引计算得出符合要求的
+			for(var i=0;i<arr.length;i++){
+				if(i%size == index){
+					result.push(arr[i]);
+				}
+			}*/
+			
+			index++;
+			if(index == size){
+				return;
+			}else{
+				arguments.callee();
+			}
+			
+		})();
+		return result;
+	}
+
+</script>
+</body>
+</html>
