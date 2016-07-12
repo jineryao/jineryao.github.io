@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>快速排序</title>
+<style>
+	body,p,div{margin:0;padding:0;}
+	div{margin:20px auto 0;}
+	.sample{width:500px;border:1px solid #333; font: 18px/24px Tahoma,'Microsoft Yahei','Simsun';background:#f1f1f1;}
+	.sample .re{padding-left:12px;color:#F65;background:#fff; word-wrap:break-word;}
+</style>
+</head>
+
+<body>
+<div id="arr1" class="sample">
+    <p>示例:</p> 
+    <p>
+   		[12,5,17,22,30,45,34,55,67,8,16,8]
+    </p>
+    <p class="re">快速排列: </p>
+</div>
+<script>
+var arr = [12,5,17,22,30,45,34,55,67,8,16,8];
+
+var oArr1 = document.getElementById('arr1');
+var oRe1 = oArr1.getElementsByClassName('re')[0];
+oRe1.innerHTML += quick(arr,false);
+
+function quick(arr,sq){
+	
+	if(arr.length <=1){
+		console.log(arr);
+		return arr;	
+	}
+	
+	var num = Math.floor(arr.lenght/2);
+	var value = arr.splice(num,1);
+	
+	var left = [], right = [];
+	for(var i=0;i<arr.length;i++){
+		if(sq){
+			if(arr[i] < value)	{
+				left.push(arr[i]);	
+			}else{
+				right.push(arr[i]);
+			}
+		}else{
+			if(arr[i] > value)	{
+				left.push(arr[i]);	
+			}else{
+				right.push(arr[i]);
+			}
+		}
+	}
+	
+	return quick(left,sq).concat(value,quick(right,sq));
+}
+
+</script>
+</body>
+</html>

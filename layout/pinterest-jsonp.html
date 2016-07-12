@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style>
+	body,div,ul{margin:0;padding:0;}
+	ul{width:980px;margin:20px auto 0;}
+	ul:after{content:'';display:block;clear:both;}
+	li{list-style:none;float:left;margin-left:10px;}
+	li div{width:101px;border:1px solid #ccc;margin-bottom:10px;}
+	li img{width:101px;}
+	li p{width:101px;margin-top:10px; overflow:hidden;}
+</style>
+
+</head>
+
+<body>
+<ul>
+	<li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+<script>
+var aLi = document.getElementsByTagName('li');
+var page = 0;
+var onOff = true;
+get();
+
+function jsonp(data){
+	console.log(data);
+	var arr = data.books;
+	for(var i=0;i<arr.length;i++){
+		var oD = document.createElement('div');
+		var oImg = document.createElement('img');
+		oImg.src = arr[i].image;
+		oImg.style.height = 146 + 'px';
+		oD.appendChild(oImg);
+		if(arr[i].title){
+			var oP = document.createElement('p');
+			oP.innerHTML = arr[i].title;
+			oD.appendChild(oP);
+		}
+		var num = getH();
+		aLi[num].appendChild(oD);
+	}
+	onOff = true;
+}
+
+function getH(){
+	var index = 0;
+	for(var i=0;i<aLi.length;i++){
+		if(aLi[index].offsetHeight > aLi[i].offsetHeight){
+			index = i;	
+		}
+	}	
+	return index;
+}
+		
+function getTop(obj){
+	var t=0;
+	while(obj){
+		t += obj.offsetTop;
+		obj = obj.offsetParent;
+	}
+	return t;
+}
+		
+function get(){
+	if(!onOff) return;
+	var sc = document.createElement('script'); 
+	sc.src = "https://api.douban.com/v2/book/search?q=美食&callback=jsonp&count=50&start=" + page;		
+	document.body.appendChild(sc);		
+}
+		
+window.onscroll = function(){
+	var i = getH();
+	var t = getTop(aLi[0]) + aLi[0].offsetHeight-500;
+	var scrollT = document.documentElement.scrollTop || document.body.scrollTop;
+	var sT = scrollT + document.documentElement.clientHeight;
+	if(t < sT && onOff){
+		page++;
+		get();
+		onOff = false;
+		console.log(page);
+	}
+}
+			
+</script>
+</body>
+</html>

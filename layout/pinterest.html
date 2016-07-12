@@ -15,13 +15,13 @@
 <script>
 	window.onload = function(){
 		var aLi = document.getElementsByTagName('li');
-		var page = 1;
+		var page = 0;
 		var onOff = true;
 		get();
 		
 		function get(){
 			if(!onOff) return;
-			ajax('get','getPics.php','cpage='+page,function(data){
+			ajax('get','getPics.php','page='+page,function(data){
 				var arr = JSON.parse(data);
 				for(var i=0;i<arr.length;i++){
 					var oD = document.createElement('div');
