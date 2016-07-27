@@ -168,7 +168,7 @@ function fnScore(){
 		}
 		
 		function translate(){
-			iX = num%5 * -maxW;
+			iX = tNum%5 * -maxW;
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = "1s";
 			oTabPic.style.WebkitTransform = oTabPic.style.transform = "translateX("+iX+"px)";
 			for(var i=0;i<aNav.length;i++){
