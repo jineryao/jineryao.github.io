@@ -324,6 +324,7 @@ function fnNewsScore(name){
 			aInput[i].value = '';
 		}
 		removeClass(sBtn,'sub');
+		onOff = false;
 	}
 	
 	oH.innerHTML = "给"+name+"添加标签";
