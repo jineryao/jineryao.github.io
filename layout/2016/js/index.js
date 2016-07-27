@@ -135,9 +135,9 @@ function fnScore(){
 	var oTabPic = classEnt(oScore,'tab_pic')[0];
 	openPage(oScore);
 	
-	tab();
-	star();
 	if(!oScore.Fn){
+		tab();
+		star();
 		bind(window,'resize',tab);
 		oScore.Fn = true;
 	}
@@ -151,7 +151,6 @@ function fnScore(){
 		console.log(aLi[0].offsetWidth);
 		console.log(maxW);
 		translate();
-		clearInterval(oTimer);
 		auto();
 		bind(oTabPic,'touchstart',start);
 		bind(oTabPic,'touchmove',move);
