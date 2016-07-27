@@ -154,7 +154,7 @@ function fnScore(){
 		auto();
 		oTabPic.ontouchstart = start;
 		oTabPic.ontouchmove = move;
-		oTabPic.ontouchen = end;
+		oTabPic.ontouchend = end;
 		
 		
 		function auto(){
