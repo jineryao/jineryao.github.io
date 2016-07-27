@@ -165,7 +165,7 @@ function fnScore(){
 		function translate(){
 			iX = num%5 * -maxW;
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = "1s";
-			oTabPic.style.transform = "translateX("+iX+"px)";
+			oTabPic.style.WebkitTransform = oTabPic.style.transform = "translateX("+iX+"px)";
 			for(var i=0;i<aNav.length;i++){
 				removeClass(aNav[i],'active');	
 			}
@@ -181,7 +181,7 @@ function fnScore(){
 		
 		function move(ev){
 			nowX = ev.changedTouches[0].pageX - startX;
-			oTabPic.style.transform = "translateX("+(nowX +iX)+"px)";
+			oTabPic.style.WebkitTransform = oTabPic.style.transform = "translateX("+(nowX +iX)+"px)";
 		}
 		
 		function end(ev){
