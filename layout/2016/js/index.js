@@ -152,10 +152,12 @@ function fnScore(){
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
 		auto();
-		oTabPic.ontouchstart = start;
-		oTabPic.ontouchmove = move;
-		oTabPic.ontouchend = end;
-		
+		bind(oTabPic,'touchstart',start);
+		bind(oTabPic,'touchmove',move);
+		bind(oTabPic,'touchend',end);
+		bind(oTabPic,'WebkitTouchstart',start);
+		bind(oTabPic,'WebkitTouchmove',move);
+		bind(oTabPic,'WebkitTouchend',end);
 		
 		function auto(){
 			oTimer = setInterval(function(){
