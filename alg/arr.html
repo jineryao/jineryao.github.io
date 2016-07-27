@@ -64,7 +64,7 @@ function aCombination(arr,n){
 //取无序组合 [不管排序,必须是不相同的项组合为一组]
 function cCombination(arr,n){
 	var mts = aCombination(arr,n);
-	mts.pop();
+	mts.pop(); //删除个数
 	var result = [];
 	
 	for(var i=0;i<mts.length;i++){

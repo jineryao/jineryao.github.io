@@ -120,21 +120,37 @@
 		}
 		
 		for(i=0;i<aStr.length;i++){
-			var reg = new RegExp(aStr[i]);
-			var aMate = [];
+			//var aMate = [];
+			var oMate = aStr[i];
+			var reg = new RegExp(oMate);
 			//循环数组, 用分解的字符串匹配, 相同添加到aMate内,作为后续判断依据
-			for(j=0;j<arr.length;j++){
-					var re = arr[j].match(reg);
-					if(re){
-						aMate = aMate.concat(re);
-					}
+			/*for(j=0;j<arr.length;j++){
+				var re = arr[j].match(reg);
+				if(re){
+					aMate = aMate.concat(re);
+				}
 			}	
+
 			//判断这次字符串匹配到几次, 全部匹配则保存
 			if(aMate.length == arr.length){
 				//对比 上一个 匹配字符串 的长度, 长的保存
 				if(aMate[0].length > count){
 					count = aMate[0].length;
 					result = aMate[0];
+				} 
+			}*/
+			
+			for(j=0;j<arr.length;j++){
+				if(arr[j].match(reg)==null){
+					oMate = '';
+					break;
+				}
+			}	
+			
+			if(oMate){
+				//对比 上一个 匹配字符串 的长度, 长的保存
+				if(oMate.length > result.length){
+					result = oMate;
 				} 
 			}
 		}
