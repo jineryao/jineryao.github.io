@@ -143,23 +143,26 @@ function fnScore(){
 	}
 	function tab(){
 		var oTabNav = classEnt(oScore,'tab_nav')[0];
+		var doc = document.documentElement;
 		var aLi = oTabPic.children;
 		var aNav = oTabNav.children;
-		var num = 0, oTime = 0;
+		var tNum = 0, oTime = 0;
 		var startX=0, nowX=0, iX=0, maxW=0;
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
-		console.log(aLi[0].offsetWidth);
-		console.log(maxW);
+		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
 		auto();
 		oTabPic.ontouchstart = start;
 		oTabPic.ontouchmove = move;
 		oTabPic.ontouchen = end;
+		doc.ontouchstart = function(ev){
+			ev.preventDefault();
+		}
 		
 		function auto(){
 			oTimer = setInterval(function(){
-				num++;
-				num = num%aLi.length;
+				tNum++;
+				tNum = tNum%aLi.length;
 				translate();
 			},2000);
 		}
@@ -171,7 +174,7 @@ function fnScore(){
 			for(var i=0;i<aNav.length;i++){
 				removeClass(aNav[i],'active');	
 			}
-			addClass(aNav[num%aLi.length],'active');
+			addClass(aNav[tNum%aLi.length],'active');
 		}
 		
 		function start(ev){
@@ -186,15 +189,15 @@ function fnScore(){
 		}
 		
 		function end(ev){
-			num= (nowX +iX) / maxW;
-			num=-Math.round(num);
-			if(num<0)
+			tNum= (nowX +iX) / maxW;
+			tNum=-Math.round(tNum);
+			if(tNum<0)
 			{
-				num=aLi.length-1;
+				tNum=aLi.length-1;
 			}
-			if(num>aLi.length-1)
+			if(tNum>aLi.length-1)
 			{
-				num=0;
+				tNum=0;
 			}
 			translate();
 			auto();
