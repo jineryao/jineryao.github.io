@@ -188,7 +188,6 @@ function fnScore(){
 			startX = ev.changedTouches[0].pageX;
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
-			
 		}
 		
 		function move(ev){
@@ -210,10 +209,10 @@ function fnScore(){
 			translate();
 			auto();
 		}
-		
+		/*
 		function prevent(ev){
 			ev.preventDefault();
-		}
+		}*/
 	}
 	
 	function star(){
@@ -256,9 +255,15 @@ function fnScore(){
 		if(aScore.length < 3){
 			info.innerHTML = "清给景区评分";
 			addClass(info,'infoS');
+			setTimeout(function(){
+				removeClass(info,'infoS');
+			},1000)
 		}else if(!oTag){
 			info.innerHTML = "清给景区添加标签";
 			addClass(info,'infoS');
+			setTimeout(function(){
+				removeClass(info,'infoS');
+			},1000)
 		}else{
 			//跳转第三页
 			addClass(oMask,'pageShow');
@@ -269,14 +274,11 @@ function fnScore(){
 			
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'none';
-				oScore.style.opacity = 0;
-				fnNews();
+				closePage(oScore);
 				closePage(oMask);
+				fnNews();
 			},2000);
 		}
-		setTimeout(function(){
-			removeClass(info,'infoS');
-		},1000)
 	}
 }
 
@@ -324,7 +326,6 @@ function fnNewsScore(name){
 			aInput[i].value = '';
 		}
 		removeClass(sBtn,'sub');
-		onOff = false;
 	}
 	
 	oH.innerHTML = "给"+name+"添加标签";
@@ -345,6 +346,7 @@ function fnNewsScore(name){
 		if(onOff){
 			closePage(oNScore);
 			fnSucceed();
+			onOff = '';
 		}
 	}
 }
@@ -359,7 +361,7 @@ function fnSucceed(){
 	function fnBtn(){
 		closePage(oSu);
 		var oScore = id('score');
-		oScore.style.opacity = 1;
+		openPage(oScore);
 	}
 }
 
