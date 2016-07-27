@@ -151,6 +151,7 @@ function fnScore(){
 		console.log(aLi[0].offsetWidth);
 		console.log(maxW);
 		translate();
+		clearInterval(oTimer);
 		auto();
 		bind(oTabPic,'touchstart',start);
 		bind(oTabPic,'touchmove',move);
@@ -250,6 +251,7 @@ function fnScore(){
 			addClass(info,'infoS');
 		}else{
 			//跳转第三页
+			oMask.style.height = oScore.offsetHeight + 'px';
 			addClass(oMask,'pageShow');
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'blur(5px)';
