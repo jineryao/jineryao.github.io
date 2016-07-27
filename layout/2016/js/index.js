@@ -89,6 +89,16 @@ function bind(obj, ev, fn) {
     }
 }
 
+function removeEvent(obj, ev, fn) { 
+    if (obj.removeEventListener) {
+        obj.removeEventListener(ev, fn, false);
+    } else {
+        obj.detachEvent('on' + ev, function() {
+            fn.call(obj);
+        });
+    }
+}
+
 function addClass(obj, sClass) { 
     var aClass = obj.className.split(' ');
     if (!obj.className) {
@@ -152,12 +162,10 @@ function fnScore(){
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
 		auto();
+		
 		bind(oTabPic,'touchstart',start);
 		bind(oTabPic,'touchmove',move);
 		bind(oTabPic,'touchend',end);
-		bind(oTabPic,'WebkitTouchstart',start);
-		bind(oTabPic,'WebkitTouchmove',move);
-		bind(oTabPic,'WebkitTouchend',end);
 		
 		function auto(){
 			oTimer = setInterval(function(){
@@ -181,7 +189,7 @@ function fnScore(){
 			startX = ev.changedTouches[0].pageX;
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
-			document.ontouchmove = document.onWebkitTouchmove = prevent;
+			
 		}
 		
 		function move(ev){
@@ -202,7 +210,7 @@ function fnScore(){
 			}
 			translate();
 			auto();
-			document.ontouchmove = document.onWebkitTouchmove = '';
+			
 		}
 		
 		function prevent(ev){
