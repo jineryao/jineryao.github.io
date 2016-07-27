@@ -147,7 +147,9 @@ function fnScore(){
 		var aNav = oTabNav.children;
 		var num = 0, oTime = 0;
 		var startX=0, nowX=0, iX=0, maxW=0;
-		maxW = parseFloat(document.documentElement.style.fontSize) * 6.5;
+		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
+		console.log(aLi[0].offsetWidth);
+		console.log(maxW);
 		translate();
 		auto();
 		bind(oTabPic,'touchstart',start);
@@ -175,7 +177,6 @@ function fnScore(){
 		function start(ev){
 			startX = ev.changedTouches[0].pageX;
 			clearInterval(oTimer);
-			bind(document,'touchmove',prevent);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
 		}
 		
@@ -197,7 +198,6 @@ function fnScore(){
 			}
 			translate();
 			auto();
-		document.removeEventListener('touchmove',prevent,false);
 		}
 		
 		function prevent(ev){
@@ -351,6 +351,7 @@ function fnSucceed(){
 }
 
 function openPage(obj){
+	document.documentElement.scrollTop = document.body.scrollTop = 0;
 	addClass(obj,'pageShow');
 	setTimeout(function(){
 		obj.style.opacity = 1;
