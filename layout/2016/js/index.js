@@ -145,13 +145,11 @@ function fnScore(){
 	var oTabPic = classEnt(oScore,'tab_pic')[0];
 	var maxW = 0;
 	openPage(oScore);
+	oScore.tab = tab;
 	
 	if(!oScore.Fn){
 		tab();
-		bind(window,'resize',function(){
-			maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
-			maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
-		});
+		bind(window,'resize',tab);
 		oScore.Fn = true;
 	}
 	function tab(){
@@ -166,10 +164,9 @@ function fnScore(){
 		translate();
 		auto();
 		star();
-		
-		bind(oTabPic,'touchstart',start);
-		bind(oTabPic,'touchmove',move);
-		bind(oTabPic,'touchend',end);
+		oTabPic.ontouchstart = start;
+		oTabPic.ontouchmove = move;
+		oTabPic.ontouchend = end;		
 		
 		function auto(){
 			oTimer = setInterval(function(){
@@ -366,6 +363,7 @@ function fnSucceed(){
 		closePage(oSu);
 		var oScore = id('score');
 		oScore.style.opacity = 1;
+		oScore.tab();
 	}
 }
 
