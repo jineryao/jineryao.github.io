@@ -181,8 +181,8 @@ function fnScore(){
 			startX = ev.changedTouches[0].pageX;
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
-			bind(doc,'touchstart', prevent);
-			bind(doc,'WebkitTouchstart',prevent);
+			bind(doc,'touchmove', prevent);
+			bind(doc,'WebkitTouchmove',prevent);
 		}
 		
 		function move(ev){
@@ -203,8 +203,8 @@ function fnScore(){
 			}
 			translate();
 			auto();
-			doc.removeEventListener('touchstart', prevent,false);
-			doc.removeEventListener('WebkitTouchstart', prevent,false);
+			doc.removeEventListener('touchmove', prevent,false);
+			doc.removeEventListener('WebkitTouchmove', prevent,false);
 		}
 		
 		function prevent(ev){
