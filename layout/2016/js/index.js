@@ -143,12 +143,15 @@ function fnHome(){
 function fnScore(){
 	var oScore = id('score');
 	var oTabPic = classEnt(oScore,'tab_pic')[0];
+	var maxW = 0;
 	openPage(oScore);
 	
 	if(!oScore.Fn){
 		tab();
-		star();
-		bind(window,'resize',tab);
+		bind(window,'resize',function(){
+			maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
+			maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
+		});
 		oScore.Fn = true;
 	}
 	function tab(){
@@ -157,7 +160,7 @@ function fnScore(){
 		var aLi = oTabPic.children;
 		var aNav = oTabNav.children;
 		var tNum = 0, oTime = 0;
-		var startX=0, nowX=0, iX=0, maxW=0;
+		var startX=0, nowX=0, iX=0;
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
@@ -263,7 +266,6 @@ function fnScore(){
 			addClass(info,'infoS');
 		}else{
 			//跳转第三页
-			oMask.style.height = oScore.offsetHeight + 'px';
 			addClass(oMask,'pageShow');
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'blur(5px)';
@@ -271,7 +273,7 @@ function fnScore(){
 			},20);
 			
 			setTimeout(function(){
-				oScore.style.WebkitFilter = 'none';
+				oScore.style.WebkitFilter = oScore.style.filter = 'none';
 				oScore.style.opacity = 0;
 				fnNews();
 				closePage(oMask);
@@ -326,6 +328,7 @@ function fnNewsScore(name){
 		for(var i=0;i<aInput.length;i++){
 			aInput[i].value = '';
 		}
+		removeClass(sBtn,'sub');
 	}
 	
 	oH.innerHTML = "给"+name+"添加标签";

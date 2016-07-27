@@ -159,9 +159,9 @@ h2 { font-size:18px; font-weight:normal; }
 .foot { position:absolute; top:10.35rem; left:0; width:100%; height:0.44rem; margin-bottom:0.5rem; text-align:center; opacity:0; animation:logo 0.5s 1s linear; -webkit-animation:logo 0.5s 1s linear; }
 .foot img { width:5rem; height:0.36rem;  }
 .cloud { background:url(../img/cloud.png) no-repeat; background-size:contain; position:absolute; }
-.cloud:nth-of-type(1){ width:0.58rem; height:0.44rem; top:0.15rem; left:4.32rem; animation:cloud 3s 1s infinite alternate linear;  }
-.cloud:nth-of-type(2){ width:0.91rem; height:0.78rem; top:0.77rem; left:0.79rem;  animation:cloud 3s 1.5s infinite alternate linear; }
-.cloud:nth-of-type(3){ width:0.54rem; height:0.41rem; top:1.42rem; left:4.02rem; animation:cloud 3s 2s infinite alternate linear;  }
+.cloud:nth-of-type(1){ width:0.58rem; height:0.44rem; top:0.15rem; left:4.32rem; animation:cloud 3s 1s infinite alternate linear; -webkit-animation:cloud 3s 1s infinite alternate linear; }
+.cloud:nth-of-type(2){ width:0.91rem; height:0.78rem; top:0.77rem; left:0.79rem;  animation:cloud 3s 1.5s infinite alternate linear; -webkit-animation:cloud 3s 1s infinite alternate linear; }
+.cloud:nth-of-type(3){ width:0.54rem; height:0.41rem; top:1.42rem; left:4.02rem; animation:cloud 3s 2s infinite alternate linear;  -webkit-animation:cloud 3s 1s infinite alternate linear; }
 
 .logo, .title, .title2, .foot, .signal {animation-fill-mode:forwards; -webkit-animation-fill-mode:forwards;}
 /*home end*/
