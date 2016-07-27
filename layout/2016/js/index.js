@@ -267,6 +267,7 @@ function fnScore(){
 			addClass(info,'infoS');
 		}else{
 			//跳转第三页
+			clearInterval(oTimer);
 			addClass(oMask,'pageShow');
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'blur(5px)';
