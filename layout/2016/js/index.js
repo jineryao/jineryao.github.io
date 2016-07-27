@@ -143,12 +143,11 @@ function fnHome(){
 function fnScore(){
 	var oScore = id('score');
 	var oTabPic = classEnt(oScore,'tab_pic')[0];
-	var maxW = 0;
 	openPage(oScore);
-	oScore.tab = tab;
 	
 	if(!oScore.Fn){
 		tab();
+		star();
 		bind(window,'resize',tab);
 		oScore.Fn = true;
 	}
@@ -158,16 +157,15 @@ function fnScore(){
 		var aLi = oTabPic.children;
 		var aNav = oTabNav.children;
 		var tNum = 0, oTime = 0;
-		var startX=0, nowX=0, iX=0;
+		var startX=0, nowX=0, iX=0, maxW = 0;
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
 		auto();
-		star();
-		oTabPic.ontouchstart = start;
-		oTabPic.ontouchmove = move;
-		oTabPic.ontouchend = end;		
 		
+		bind(oTabPic,'touchstart',start);
+		bind(oTabPic,'touchmove',move);
+		bind(oTabPic,'touchend',end);
 		function auto(){
 			oTimer = setInterval(function(){
 				tNum++;
@@ -177,7 +175,7 @@ function fnScore(){
 		}
 		
 		function translate(){
-			iX = tNum%5 * -maxW;
+			iX = tNum%aLi.length * -maxW;
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = "1s";
 			oTabPic.style.WebkitTransform = oTabPic.style.transform = "translateX("+iX+"px)";
 			for(var i=0;i<aNav.length;i++){
@@ -211,7 +209,6 @@ function fnScore(){
 			}
 			translate();
 			auto();
-			
 		}
 		
 		function prevent(ev){
@@ -264,7 +261,6 @@ function fnScore(){
 			addClass(info,'infoS');
 		}else{
 			//跳转第三页
-			clearInterval(oTimer);
 			addClass(oMask,'pageShow');
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'blur(5px)';
@@ -363,7 +359,6 @@ function fnSucceed(){
 		closePage(oSu);
 		var oScore = id('score');
 		oScore.style.opacity = 1;
-		oScore.tab();
 	}
 }
 
