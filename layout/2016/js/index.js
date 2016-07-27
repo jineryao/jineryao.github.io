@@ -13,7 +13,7 @@
   var grids = baseWidth / 100;
   var clientWidth = html.clientWidth || 320;
   // set rem first
-  html.style.fontSize = clientWidth / grids + 'px';
+  html.style.fontSize = parseFloat(clientWidth / grids) + 'px';
   
   // create testDom
   var testDom = document.createElement('div');
@@ -165,6 +165,7 @@ function fnScore(){
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
 		auto();
+		star();
 		
 		bind(oTabPic,'touchstart',start);
 		bind(oTabPic,'touchmove',move);
