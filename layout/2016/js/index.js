@@ -155,9 +155,7 @@ function fnScore(){
 		oTabPic.ontouchstart = start;
 		oTabPic.ontouchmove = move;
 		oTabPic.ontouchen = end;
-		doc.ontouchstart = function(ev){
-			ev.preventDefault();
-		}
+		
 		
 		function auto(){
 			oTimer = setInterval(function(){
@@ -181,6 +179,9 @@ function fnScore(){
 			startX = ev.changedTouches[0].pageX;
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
+			doc.ontouchstart = function(ev){
+				ev.preventDefault();
+			}
 		}
 		
 		function move(ev){
@@ -201,6 +202,7 @@ function fnScore(){
 			}
 			translate();
 			auto();
+			doc.ontouchstart = '';
 		}
 		
 		function prevent(ev){
