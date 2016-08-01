@@ -156,11 +156,14 @@ function fnScore(){
 		var doc = document.documentElement;
 		var aLi = oTabPic.children;
 		var aNav = oTabNav.children;
-		var tNum = 0, oTime = 0;
+		var tNum = 0, oTimer = 0;
 		var startX=0, nowX=0, iX=0, maxW = 0;
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
+		if(oTimer){
+			clearInterval(oTimer);
+		}
 		auto();
 		
 		bind(oTabPic,'touchstart',start);
