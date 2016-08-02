@@ -152,6 +152,9 @@ function fnScore(){
 	}
 	
 	function tab(){
+		if(oTimer){
+			clearInterval(oTimer);
+		}
 		var oTabNav = classEnt(oScore,'tab_nav')[0];
 		var doc = document.documentElement;
 		var aLi = oTabPic.children;
@@ -160,14 +163,11 @@ function fnScore(){
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
-/*		if(oTimer){
-			clearInterval(oTimer);
-		}*/
 		auto();
 		arrEvent = {'touchstart':start, 'touchmove':move, 'touchend':end};
-		bind(oTabPic,'touchstart',start);
-		bind(oTabPic,'touchmove',move);
-		bind(oTabPic,'touchend',end);
+		bind(oTabPic,'touchstart',arrEvent['touchstart']);
+		bind(oTabPic,'touchmove',arrEvent['touchmove']);
+		bind(oTabPic,'touchend',arrEvent['touchend']);
 		
 		function auto(){
 			oTimer = setInterval(function(){
