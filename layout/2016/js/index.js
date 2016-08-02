@@ -130,8 +130,6 @@ function fnHome(){
 	
 	setTimeout(function(){
 		oHome.style.opacity=0;
-		var oScore = id('score');
-		addClass(oScore,'pageShow');
 	},3000);
 	
 	function end(){
@@ -143,38 +141,41 @@ function fnHome(){
 function fnScore(){
 	var oScore = id('score');
 	var oTabPic = classEnt(oScore,'tab_pic')[0];
+	var oTimer = 0,tNum = 0, arrEvent={};
 	openPage(oScore);
 	
+	tab();
 	if(!oScore.Fn){
-		tab();
 		star();
 		bind(window,'resize',tab);
 		oScore.Fn = true;
 	}
+	
 	function tab(){
 		var oTabNav = classEnt(oScore,'tab_nav')[0];
 		var doc = document.documentElement;
 		var aLi = oTabPic.children;
 		var aNav = oTabNav.children;
-		var tNum = 0, oTimer = 0;
 		var startX=0, nowX=0, iX=0, maxW = 0;
 		maxW = Math.round(parseFloat(document.documentElement.style.fontSize) * 6.5);
 		maxW = doc.offsetWidth > maxW ? aLi[0].offsetWidth : maxW;
 		translate();
-		if(oTimer){
+/*		if(oTimer){
 			clearInterval(oTimer);
-		}
+		}*/
 		auto();
-		
+		arrEvent = {'touchstart':start, 'touchmove':move, 'touchend':end};
 		bind(oTabPic,'touchstart',start);
 		bind(oTabPic,'touchmove',move);
 		bind(oTabPic,'touchend',end);
+		
 		function auto(){
 			oTimer = setInterval(function(){
 				tNum++;
 				tNum = tNum%aLi.length;
 				translate();
 			},2000);
+			console.log(oTimer);
 		}
 		
 		function translate(){
@@ -189,6 +190,7 @@ function fnScore(){
 		
 		function start(ev){
 			startX = ev.changedTouches[0].pageX;
+			console.log(oTimer);
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
 		}
@@ -212,15 +214,11 @@ function fnScore(){
 			translate();
 			auto();
 		}
-		/*
-		function prevent(ev){
-			ev.preventDefault();
-		}*/
 	}
 	
 	function star(){
 		var oList = classEnt(oScore,'scoreList')[0];
-		var btn = classEnt(oScore,'btn')[0];
+		
 		var aStar = classEnt(oList,'star');
 		for(var i=0;i<aStar.length;i++){
 			fn(aStar[i]);
@@ -244,9 +242,10 @@ function fnScore(){
 				}
 			}
 		}
-		bind(btn,'touchstart',subScore);
 	}	
 	
+	var btn = classEnt(oScore,'btn')[0];
+	bind(btn,'touchstart',subScore);
 	
 	function subScore(){
 		var oMask = id('mask');
@@ -254,6 +253,7 @@ function fnScore(){
 		var aScore = oList.querySelectorAll('[data-star]');
 		var oTag = oScore.querySelector(':checked');
 		var info = classEnt(oScore,'info')[0];
+		var btn = classEnt(oScore,'btn')[0];
 		
 		if(aScore.length < 3){
 			info.innerHTML = "清给景区评分";
@@ -279,6 +279,12 @@ function fnScore(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'none';
 				closePage(oScore);
 				closePage(oMask);
+				console.log(oTimer);
+				clearInterval(oTimer);
+				for(var attr in arrEvent){
+					removeEvent(oTabPic,attr,arrEvent[attr]);	
+				}
+				removeEvent(btn,'touchstart',subScore);
 				fnNews();
 			},2000);
 		}
@@ -363,8 +369,9 @@ function fnSucceed(){
 	bind(oBtn,'touchend',fnBtn);
 	function fnBtn(){
 		closePage(oSu);
-		var oScore = id('score');
-		openPage(oScore);
+		/*var oScore = id('score');
+		openPage(oScore);*/
+		fnScore();
 	}
 }
 
