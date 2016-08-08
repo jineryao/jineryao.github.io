@@ -151,6 +151,8 @@ function fnScore(){
 		oScore.Fn = true;
 	}
 	
+	
+	
 	function tab(){
 		if(oTimer){
 			clearInterval(oTimer);
@@ -279,12 +281,16 @@ function fnScore(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'none';
 				closePage(oScore);
 				closePage(oMask);
+				//清理事件缓存
 				console.log(oTimer);
 				clearInterval(oTimer);
 				for(var attr in arrEvent){
 					removeEvent(oTabPic,attr,arrEvent[attr]);	
 				}
+				arrEvent='';
+				document.documentElement.scrollTop = document.body.scrollTop = 0;
 				removeEvent(btn,'touchstart',subScore);
+				//清理事件缓存 end
 				fnNews();
 			},2000);
 		}

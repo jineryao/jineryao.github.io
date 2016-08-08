@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>导航菜单</title>
+<script src="../js/vue.js"></script>
+<style>
+	body,div,p { margin:0; padding:0; }
+	a { text-decoration:none; }
+	#test1 { width:100%; height:100px; border-bottom:1px solid #666; }
+	#test1 nav { width:100%; text-align:center; overflow:hidden; display:box; display:inline-box; }
+	#test1 a { margin:0; padding:0 30px; line-height:40px; font-size:20px; background:#5597b4; color:#fff; display:inline-block; margin:0 auto; transition:background 0.2s; }
+	#test1.home .home,#test1.projects .projects,#test1.services .services,#test1.contact .contact { background:#e35885; }
+	#test1  p { text-align:center; margin-top:10px; font-size:20px;  }
+	#test1  span { display:inline-block; padding:0 5px; background:#5597b4; color:#fff; }
+	
+#test2 strong { font-size:22px; }
+#test2 .success { color:green; }
+#test2 .error { color:red; }
+#test2 .close { cursor:pointer; }
+</style>
+</head>
+
+<body>
+<!--导航菜单-->
+<h2>导航菜单</h2>
+    <div id="test1" :class="active | lowercase">
+        <nav>
+            <a href="javascript:;" v-for="item in items" :class='item.text | lowercase' @click="at(item.text)" >
+            	{{item.text}}
+            </a>
+        </nav>
+        <p>You Chose <span>{{ active }} </span></p>
+    </div>
+    
+    
+    
+<!--slor-->
+<template id="alert-child">
+    <div :class="childClass" v-show='show'>
+        <!--slot DOM占位,组件可以设置默认dom,有需求可以随时更改-->
+        <slot><strong>Default,</strong>Ddddddd..</slot>
+        <span @click="closeChild" class="close">X</span>
+    </div>
+</template>
+<div id="test2">
+    <h2>slot示例</h2>
+    <alert></alert>
+    <alert type="success" >
+        <strong>Success, </strong>Ssssss....
+    </alert>
+    <alert type="error">
+        <strong>Error, </strong>Eeeee...
+    </alert>
+</div>
+<!--slor end-->
+</body>
+
+<script>
+/*导航菜单*/
+new Vue({
+	el : '#test1',
+	data : {
+		items : [
+			{ text : 'HOME'},
+			{ text : 'PROJECTS'},
+			{ text : 'SERVICES'},
+			{ text : 'CONTACT'}
+		],
+		active : 'HOME'
+	},
+	methods : {
+		at : function(text){
+			this.active = text;
+		}
+	}
+});
+/*导航菜单 end */
+
+<!--slor-->
+Vue.component('alert',{
+		template : '#alert-child',
+		props : ['type'],
+		data : function(){
+			return {show : true};	
+		},
+		computed : {
+			childClass: function(){
+			 	return this.type;	
+			}
+		},
+		methods : {
+			closeChild : function(){
+				this.	show=false;
+			}	
+		}
+	});
+	
+	new Vue({
+		el : '#test2'
+	});
+<!--slor end-->
+</script>
+</html>
