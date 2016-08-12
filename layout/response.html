@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>响应式布局</title>
+<style>
+body { font-family:Arial,"微软雅黑"; }
+a { text-decoration:none; color:#000; }
+h1{ font-size:1.6em; }
+h2{ font-size:1.3em; }
+
+.gridwrap { overflow:hidden; position:relative; }
+.gridbox { margin-bottom:2%; margin-right: 2%; float:left; }
+.gridheader { width:100%; }
+.gridmain { width:48%; }
+.gridright { width:23%; margin-right:0; }
+.gridfooter { width:100%; margin-bottom:0; }
+
+.header { padding:1%; background-color:#f1f1f1; border:1px solid #e9e9e9; position:relative; }
+.menubtn { display:none; }
+.gridmenu { width:23%; display:block; }
+.gridmenu a { margin:4%; margin-left:0; margin-top:0; padding:4%; border-bottom:1px solid #e9e9e9; cursor:pointer; display:block; }
+.main { padding:2%; }
+.main img { width:100%; }
+.right { padding:4%; background-color:#CDF0F6; }
+.footer { padding:1%; text-align:center; background-color:#f1f1f1;  border:1px solid #e9e9e9; font-size:0.625em; }
+
+@media only screen and (max-width: 500px) {
+	.menubtn { width:5%; height:30%; border:1px solid #000; position:absolute; right:2%; top:0; bottom:0; margin:auto 0; text-align:center; cursor:pointer; display:block; overflow:hidden; }
+    .gridmenu { width:100%; opacity:0; display:none; transition:0.5s;   }
+    .gridmenu a { margin:1%; padding:1%; display:block; }
+    .gridmain { width:100%; }
+    .main { padding:1%; }
+    .gridright { width:100%; }
+    .right { padding:1%; }
+    .gridbox { margin-right:0; float:left; }
+}
+
+</style>
+
+</head>
+<body>
+    <div class="wrap">
+        <div class="gridbox gridheader">
+            <div class="header">
+                <h1>The Pulpit Rock</h1>
+                <span class="menubtn">
+                ---
+                </span>
+            </div>
+        </div>
+        <div id="menu" class="gridbox gridmenu">
+            <a href="javascript:;">The Drive</a>
+            <a href="javascript:;">The Walk</a>
+            <a href="javascript:;">The Return</a>
+            <a href="javascript:;">The End</a>
+        </div>
+        <div class="gridbox gridmain">
+            <div class="main">
+                <h1>The Walk</h1>
+                <p>The walk to the Pulpit Rock will take you approximately two hours, give or take an hour depending on the weather conditions and your physical shape.</p>
+                <img src="../images/response_bg.jpg" />
+            </div>
+        </div>
+        <div class="gridbox gridright">
+            <div class="right">
+                <h2>What?</h2>
+                <p>The Pulpit Rock is a part of a mountain that looks like a pulpit.</p>
+                <h2>Where?</h2>
+                <p>The Pulpit Rock is in Norway</p>
+                <h2>Price?</h2>
+                <p>The walk is free!</p>
+            </div>
+        </div>
+        <div class="gridbox gridfooter">
+            <div class="footer">
+				<p>
+                	This web page is a part of a demonstration of fluid web design made by www.w3schools.com. Resize the browser window to see the content response to the resizing.
+                </p>
+            </div>
+        </div>
+    </div>
+
+<script>
+	var menuOnOff = document.getElementsByClassName('menubtn')[0];
+	var menu = document.getElementById('menu');
+	
+	menuOnOff.onclick = function(){
+		if(menu.style.display=='block' ){
+				menu.style.opacity=0;
+				setTimeout(function(){
+					menu.style.display = 'none';
+				},500);
+		}else{
+			menu.style.display= 'block';
+			setTimeout(function(){
+				menu.style.opacity=1;
+			},20);
+		}
+	}
+	
+	menu.onclick=function(){
+		if(document.documentElement.clientWidth <= 500	){
+			menu.style.opacity=0;
+			setTimeout(function(){
+				menu.style.display = 'none';
+			},500);
+		}
+	}
+	
+	
+	window.onresize = function(){
+		if(document.documentElement.clientWidth > 500	){
+			menu.style.width = '23%';
+			menu.style.opacity=1;
+			menu.style.display = 'block';
+		}else{
+			menu.style.opacity=0;
+			menu.style.width = '100%';
+			menu.style.display = 'none';
+		}
+	}
+
+</script>
+</body>
+</html>
