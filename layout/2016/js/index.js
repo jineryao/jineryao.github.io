@@ -123,18 +123,22 @@ function removeClass(obj, sClass) {
     }
 }
 
+fnHome();
+
 function fnHome(){
 	var oHome = id('home');
-	bind(oHome,'transitionend',end);
-	bind(oHome,'webkitTransitionEnd',end);
-	
-	setTimeout(function(){
-		oHome.style.opacity=0;
-	},3000);
+	//bind(oHome,'transitionend',end);
+	bind(oHome,'animationend',end);
+	//bind(oHome,'webkitTransitionEnd',end);
+	bind(oHome,'webkitAnimationEnd',end);
 	
 	function end(){
-		removeClass(oHome,'pageShow');
-		fnScore();
+		setTimeout(function(){
+			closePage(oHome);
+			var oScore = id('score');
+			openPage(oScore);
+			fnScore();
+		},3000);
 	}
 }
 
@@ -150,8 +154,6 @@ function fnScore(){
 		bind(window,'resize',tab);
 		oScore.Fn = true;
 	}
-	
-	
 	
 	function tab(){
 		if(oTimer){
@@ -177,7 +179,7 @@ function fnScore(){
 				tNum = tNum%aLi.length;
 				translate();
 			},2000);
-			console.log(oTimer);
+			//console.log(oTimer);
 		}
 		
 		function translate(){
@@ -192,7 +194,7 @@ function fnScore(){
 		
 		function start(ev){
 			startX = ev.changedTouches[0].pageX;
-			console.log(oTimer);
+			//console.log(oTimer);
 			clearInterval(oTimer);
 			oTabPic.style.WebkitTransition = oTabPic.style.transition = 'none';
 		}
@@ -271,7 +273,8 @@ function fnScore(){
 			},1000)
 		}else{
 			//跳转第三页
-			addClass(oMask,'pageShow');
+			
+			openPage(oMask);
 			setTimeout(function(){
 				oScore.style.WebkitFilter = oScore.style.filter = 'blur(5px)';
 				oMask.style.opacity = 1;
@@ -284,6 +287,7 @@ function fnScore(){
 				//清理事件缓存
 				console.log(oTimer);
 				clearInterval(oTimer);
+				oTimer = '';
 				for(var attr in arrEvent){
 					removeEvent(oTabPic,attr,arrEvent[attr]);	
 				}
