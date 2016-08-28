@@ -6,18 +6,79 @@
 <style>
 	body,p{margin:0;padding:0;}
 	body{width:100%;height:100%; user-select:none; -webkit-user-select:none; }
-	div{width:500px;margin:20px auto 0;}
-	div ul{width:500px;border:1px solid #ccc; font: 16px/24px Tahoma,'Microsoft Yahei','Simsun';}
-	ul li{padding-left:12px;color:#333;background:#fff;}
-	ul li p { text-indent:20px; font-size:14px;  color:#999; }
-	a{text-decoration:none;  color:#333;}
-	a:hover { color:#F60; }
+	.main{width:500px;margin:20px auto 0;}
+	.main ul{width:500px;border:1px solid #ccc; font: 16px/24px Tahoma,'Microsoft Yahei','Simsun';}
+	.main ul li{padding-left:12px;color:#333;background:#fff;}
+	.main ul li p { text-indent:20px; font-size:14px;  color:#999; }
+	.main a{text-decoration:none;  color:#333;}
+	.main a:hover { color:#F60; }
+	
+	
+	@keyframes updown{
+		0%{
+			transform:translateY(10px);
+		}
+		25%{
+			transform:translateY(15px);
+		}
+		50%{
+			transform:translateY(20px);
+		}
+		75%{
+			transform:translateY(25px);
+		}
+		100%{
+			transform:translateY(30px);
+		}
+	}
+	@keyframes outin{
+		0%{ 
+			opacity:0.8;
+		}
+		25%{
+			opacity:0.7;
+		}
+		50%{
+			opacity:0.6;
+		}
+		75%{
+			opacity:0.5;
+		}
+		100%{
+			opacity:0.4;
+		}
+	}
+	.mascot {
+		width:105px;
+		position:fixed;
+		right:10px;
+		bottom:10px;
+	}
+	.mascot-box{ animation:updown 1s linear infinite alternate; }
+	.above {
+		height:120px;	
+		background-color:#EAEAEA;
+		border-top-left-radius:70px 65px; 
+		border-top-right-radius:70px 65px;
+	}
+	.below{
+		height: 20px;
+		background-size: 20px 20px;
+		background-image: radial-gradient(circle at 50% 0%,#EAEAEA,80%,rgba(0,0,0,0) 80%);
+	}
+	
+	.eye{ width: 100px; font-size:0; position:absolute; top:40px; left:14px;  }
+	.eye .left,.eye .right { display:inline-block; width:30px; height:25px; background-color:rgba(0,0,0,0.4); border-radius:30%; }
+	.eye .support { display:inline-block; width:16px; height:5px; background-color:rgba(0,0,0,0.4); position:relative; top:-12px; }
+	.mouth { width:20px; height:10px; border-radius:45%; border:2px solid rgba(0,0,0,0.4); position:absolute; top:80px; left:42px;  }
+	
+	.shadow{ margin-top:40px; height:20px; background:#D9D9D9; border-radius:50%; animation:outin 1s linear infinite alternate; }
 </style>
 <base target="_blank"/>
 </head>
 
 <body>
-    <div>
+    <div class="main">
     <h2>布局</h2>
     <ul>
         <li>
@@ -54,6 +115,7 @@
         <li><a href="effects/clock.html">简易时钟</a></li>
         <li><a href="effects/apple.html" >简易菜单</a></li>
        <li><a href="effects/viwepager.html">简易轮播</a></li>
+        <li><a href="effects/shade.html" >自适应遮罩</a></li>
         <li><a href="effects/drag.html" >元素拖拽,碰撞,交换</a></li>
     </ul>
     <h2>记录示例</h2>
@@ -69,11 +131,27 @@
         <li><a href="alg/swopRowCell.html">行列互换</a></li>
         <li><a href="alg/screwMatrix.html" >螺旋矩阵</a></li>
         <li><a href="alg/findCommon.html" >公共项查找</a></li>
-  
     </ul>
     </div>
     
-   
-    
+<div class="mascot">
+	<div class="mascot-box">
+        <div class="above"></div>
+        <div class="below"></div>
+        <p class="eye">
+            <i class="left"></i>
+            <i class="support"></i>
+            <i class="right"></i>
+        </p>
+        <p class="mouth"></p>
+    </div>
+    <p class="shadow"></p>
+</div> 
+<script>
+	var mascot = document.getElementsByClassName('mascot')[0];
+	mascot.onclick = function(){
+		document.documentElement.scrollTop = document.body.scrollTop = 0;
+	}
+</script>
 </body>
 </html>
