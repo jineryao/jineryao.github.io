@@ -14,8 +14,16 @@
    		border-radius: 10px;
 		background:-webkit-linear-gradient(top right, #aaa 15%, #ccc 70%,#e3e3e3 100%);
    	}
-	.main{width:500px;margin:20px auto 0;}
-	.main ul{width:500px;border:1px solid #ccc; font: 16px/24px Tahoma,'Microsoft Yahei','Simsun';}
+	.side{
+		float:left;
+		width:25%;
+		padding-bottom: 100%;
+		margin-right:5%;
+		background: url(images/side_bg.jpg) no-repeat fixed;
+		background-size: 25% 100%;
+	}
+	.main{float:left;width:60%;margin:20px auto 0;}
+	.main ul{width:500px; border:1px solid #ccc; font: 16px/24px Tahoma,'Microsoft Yahei','Simsun';}
 	.main ul li{padding-left:12px;color:#333;}
 	.main ul li p { text-indent:20px; font-size:14px;  color:#999; }
 	.main a{text-decoration:none;  color:#333;}
@@ -87,6 +95,8 @@
 </head>
 
 <body>
+	<div class="side">
+	</div>
     <div class="main">
     <h2>布局</h2>
     <ul>
@@ -134,7 +144,7 @@
 			<a href="vue/vue-webpack/index.html#!/index">vue+vue-router+webpack+es6单页面组件</a>
 		</li>
 		<li>
-			<a href="es6/Countdown.html">3D计时</a>
+			<a href="es6/Countdown.html">3D倒计时</a>
 			<p>用的es6且没有转换,用Proxy监听到数据时同步更新dom</p>
 		</li>
      </ul>

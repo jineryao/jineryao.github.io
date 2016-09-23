@@ -261,6 +261,7 @@
         let date = new Date();
         date.setMinutes(arrProxy[0]*10+arrProxy[1],arrProxy[2]*10+arrProxy[3]);
         let dateArr = [];
+        clearTimeout(torus.timer);
         torus.timer = setInterval(function(){
             date.setSeconds(date.getSeconds()-1);
 
