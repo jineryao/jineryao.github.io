@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            overflow: hidden;
+            background-color: #eee;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select:none;
+        }
+        .time {
+            width:440px;
+            position: absolute;
+            top: 20px;
+            left: 0px;
+            right: 0px;
+            margin: 0 auto;
+        }
+        .time h1 {
+            text-align: center;
+            margin-bottom:40px;
+        }
+        .time .content h2 {
+            width:220px;
+            float: left;
+            text-align: center;
+            margin: 0px;
+        }
+        .btn {
+            position: absolute;
+            top:520px;
+            left: 0;
+            width:100%;
+            text-align: center;
+        }
+        .btn button {
+            display:inline-block;
+            width:150px;
+            height:40px;
+            text-align: center;
+            font: 16px/40px "微软雅黑";
+            padding:0;
+            border:0;
+            background-color:#f6f6f6;
+            cursor: pointer;
+            outline:none;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select:none;
+        }
+
+        .btn button:active {
+            background-color:#ffffff;
+        }
+        .torus-child{
+            width:100px;
+            height:200px;
+            float: left;
+            padding: 120px 5px 0 5px;
+            -webkit-perspective: 800px;
+            perspective: 800px;
+        }
+        .box{
+            width: 100px;
+            height:100px;
+            position: relative;
+            cursor: crosshair;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            transition: .3s;
+            /*
+              已知角度(180-36)/2, 边长100/2, 用三角函数求半径
+              Math.tan(72*Math.PI/180)*50
+            */
+            transform-origin: center center -153.88px;
+        }
+        .box:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .box div{
+            position: absolute;
+            top: 100px;
+            left: 0px;
+            user-select: none;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            -webkit-transform-origin: top;
+            transform-origin: top;
+            /*正n边形外角和: 360deg; 所以一边的角度: 360/n */
+            -webkit-transform: rotateX(-36deg);
+            transform: rotateX(-36deg);
+        }
+        .box>div{
+            top: 0px;
+            -webkit-transform: rotateX(0deg);
+            transform: rotateX(0deg);
+        }
+        .box span{
+            display: block;
+            width: 98px;
+            height: 94px;
+            border:1px solid #fff;
+            margin:3px;
+            border-radius:8px;
+            font: 50px/98px "宋体";
+            text-align: center;
+            transition: .5s;
+            background-color:#f6f6f6;
+            opacity: .3;
+        }
+        .box .action {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<seclect class="time">
+    <h1 class="datatime">00:00</h1>
+    <div class="content">
+        <h2>Minutes</h2>
+        <h2>Scond</h2>
+    </div>
+    <div class="torus-child">
+        <div class="box" data-val="5"></div>
+    </div>
+    <div class="torus-child">
+        <div class="box"></div>
+    </div>
+    <div class="torus-child">
+        <div class="box" data-val="5"></div>
+    </div>
+    <div class="torus-child">
+        <div class="box"></div>
+    </div>
+</seclect>
+<div class="btn">
+    <button class="clock">开始计时</button>
+    <button class="close">停止</button>
+    <audio src="14.mp3" preload></audio>
+</div>
+<script>
+    "use strict"
+    let torus = document.querySelector('.torus-child');
+    let boxs = document.querySelectorAll('.torus-child .box');
+    let btnClock = document.querySelector('.clock');
+    let btnClose = document.querySelector('.close');
+    let oTime = document.querySelector('.datatime');
+    let boxArr = [0,0,0,0];
+
+    for(let i= 0,len=boxs.length; i<len; i++){
+        let obj = boxs[i];
+        obj.index = i;    //容器的索引
+        obj.mnul = false; //容器默认自动模式
+        obj.scrollT = 0; //容器默认滚动角度
+        setTorus(obj);
+        torusScroll(obj);
+    }
+
+    let arrProxy = new Proxy(boxArr,{
+        set(obj, key, value) {
+
+            if(obj[key] == value){ //值未改变则不作更多操作
+                boxs[key].querySelector(`.span${value}`).classList.add('action');
+                return true;
+            }
+
+            value = parseInt(value);
+            let oBox = boxs[key];
+            oBox.querySelector(`.span${obj[key]}`).classList.remove('action');
+            obj[key] = value;
+            oTime.innerHTML = `${obj[0]}${obj[1]}:${obj[2]}${obj[3]}`;
+            oBox.querySelector(`.span${value}`).classList.add('action');
+
+            if(!oBox.mnul){
+                let scroll = 0, val = oBox.dataset.val;
+                if(val){  //不让滑动超出范围[十位数的滑动控制]
+                    console.log(value);
+                    if(value == 5){
+                        scroll = val * 36;
+                    }else{
+                        scroll = oBox.scrollT - 36;
+                    }
+                }else{
+                    scroll = oBox.scrollT - 36;
+                }
+                oBox.scrollT = scroll;
+                oBox.num = value;
+                oBox.style.transform = `rotateX(${scroll}deg)`;
+            }
+            return true;
+        }
+    });
+
+
+    btnClock.onclick = clockClick;
+    btnClose.onclick = closeClick;
+
+    function torusScroll(obj){
+        obj.onmousedown = function(ev){
+            let top = ev.clientY;
+            let scrollT = obj.scrollT, scroll=0, dis=0;
+            let val = obj.dataset.val, num = obj.num || 0;
+
+            let oSpan = obj.querySelector(`.span${ num ? num : 0}`);
+            oSpan.classList.remove('action');//清除原数字上的高亮
+
+            document.onmousemove = function(ev){
+                dis = -(ev.clientY - top) * 0.8;//增加缓冲
+                let speed = dis + scrollT;
+                scroll = speed - speed % 36;//准确定位数字
+
+                if(val){  //不让滑动超出范围[十位数的滑动控制]
+                    if(scroll < 0){
+                        scroll = 0;
+                    }else if(scroll > val*36){
+                        scroll = val * 36;
+                    }
+                }
+                setNum();
+                obj.mnul = true; //手动模式
+                arrProxy[obj.index] = num;//利用监听同步显示
+
+                obj.style.transform = `rotateX(${ scroll }deg)`;
+            }
+
+            document.onmouseup = function(){
+                if(dis != 0){
+                    obj.scrollT = scroll;
+                    setNum();
+                    obj.num = num;
+                }
+                obj.mnul = false;
+                arrProxy[obj.index] = num;//利用监听同步显示
+                document.onmouseup = document.onmousemove = null;
+            }
+
+            function setNum(){
+                num = parseInt((scroll/36+'').slice(-1));
+                num = scroll<0 && num!=0 ? 10-num : num;
+            }
+        }
+    }
+
+    //开启倒计时
+    function clockClick(){
+        //判断是否有设置时间
+        if(parseInt(boxArr.join(''))==0){
+            alert('请设置时间');
+            return;
+        }
+
+        //倒计时计算并关闭滚轮事件
+        for(let i of boxs){
+            i.onmousedown = null;
+        }
+        let date = new Date();
+        date.setMinutes(arrProxy[0]*10+arrProxy[1],arrProxy[2]*10+arrProxy[3]);
+        let dateArr = [];
+        torus.timer = setInterval(function(){
+            date.setSeconds(date.getSeconds()-1);
+
+            if(date.getMinutes() > 9){
+                [dateArr[0], dateArr[1]] = date.getMinutes().toString().split('');
+            }else{
+                [dateArr[0], dateArr[1]] = [0,date.getMinutes()];
+            }
+            if(date.getSeconds() > 9){
+                [dateArr[2], dateArr[3]] = date.getSeconds().toString().split('');
+            }else{
+                [dateArr[2], dateArr[3]] = [0,date.getSeconds()];
+            }
+
+            [arrProxy[0],arrProxy[1],arrProxy[2],arrProxy[3]] = [...dateArr];
+            if(parseInt(boxArr.join(''))==0){
+                closeClick();
+            }
+        },1000)
+    }
+
+    //关闭定时器并激活事件
+    function closeClick(){
+        if(!torus.timer){
+            return;
+        }
+        clearTimeout(torus.timer);
+        torus.timer = null;
+        for(let obj of boxs){
+            torusScroll(obj);
+        }
+        let au = document.querySelector('audio');
+        au.play();
+    }
+
+    //生成滚轮
+    function setTorus(child){
+        let str = '';
+        let val = child.dataset.val || 9;
+        for(let i=9; i>=0; i--){
+            str = `<div><span class=\"span${i} ${ i==0?'action':'' }\">${i<=val?i:''}</span>${str}</div>`;
+        }
+        child.innerHTML = str;
+    }
+</script>
+</body>
+</html>
