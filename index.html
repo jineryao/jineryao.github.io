@@ -18,13 +18,16 @@
 		min-height:640px;
 	}
 	.side{
-		float:left;
+		position: fixed;
+		top:0;
+		left:0;
 		width:338px;
-		padding-bottom: 100%;
+		min-height:640px;
 		background: url(images/side_bg.jpg) no-repeat fixed;
 		background-size: 338px 640px;
 	}
-    .main{ float:left; max-width:550px; margin:20px auto 0; padding-left: 40px;
+	
+    .main{ width:100%; max-width:550px; margin:0 0 0 338px; padding-left: 40px;
         transition: .5s;}
     .main ul{width:500px; border:1px solid #ccc; font: 16px/24px Tahoma,'Microsoft Yahei','Simsun';}
     .main ul li{padding-left:12px;}
