@@ -1,2 +1,2 @@
 # jineryao.github.io
-blog
+学习时练习dome
